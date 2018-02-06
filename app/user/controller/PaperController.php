@@ -33,6 +33,10 @@ class PaperController extends UserBaseController
             return $this->fetch();
         } 
         $idcard=$this->request->param('identity_num','','trim');
+        if(empty($idcard)){
+            $this->assign('error','');
+            return $this->fetch();
+        }
         $this->assign('idcard',$idcard); 
         $info=Db::name('user')->where(['user_login'=>$idcard,'user_type'=>2])->find();
         if(empty($info)){
@@ -41,25 +45,23 @@ class PaperController extends UserBaseController
         }
        
         $list1=Db::name('paper')
-        ->where(['borrower_idcard'=>$idcard])
+        ->where(['borrower_idcard'=>['eq',$idcard],'status'=>['in',[3,4,5]]])
         ->order('status asc,expire_day asc,overdue_day asc')
         ->column(''); 
         $list2=Db::name('paper_old')
         ->where(['borrower_idcard'=>$idcard])
         ->order('overdue_day asc')
         ->column(''); 
-        if(empty($list1) && empty($list2)){
-            $this->assign('error','没有此用户借款记录');
-            return $this->fetch(); 
-        }
-        $this->assign('error','');
-        $this->assign('search','search'); 
+         
+        $this->assign('info',$info); 
         $this->assign('list1',$list1); 
         $this->assign('list2',$list2); 
         $this->assign('paper_status',config('paper_status')); 
-        return $this->fetch();
+        return $this->fetch('search_info');
       
     }
+    
+     
     /**
      *补借条
      */
@@ -316,6 +318,12 @@ class PaperController extends UserBaseController
                 if($info_reply['type']=='back'){
                     $m_paper->where('id',$info_paper['id'])->delete();
                     Db::name('paper_old')->insert($info_paper);
+                    //确认还款后更新用户信息
+                    $data_user1=['back'=>bcsub($user1['back'],$info_paper['money'],2)];
+                    $data_user2=['send'=>bcsub($user2['send'],$info_paper['money'],2)];
+                     
+                    $m_user->where('id',$user1['id'])->update($data_user1);
+                    $m_user->where('id',$user2['id'])->update($data_user2);
                 }elseif($info_reply['type']=='send'){
                     //确认借款后更新用户信息
                     $data_user1=['back'=>bcadd($user1['back'],$info_paper['money'],2)];
@@ -328,7 +336,14 @@ class PaperController extends UserBaseController
                         $m_borrowers->insert($data_borrowers);
                         $data_user1['borrow_man']=$user1['borrow_man']+1;
                     }
-                    //借款笔数
+                    //累计借款笔数
+                    $data_user1['borrow_num']=$user1['borrow_num']+1; 
+                    //borrow_money累计借款
+                    $data_user1['borrow_money']=$user1['borrow_money']+$info_paper['money'];
+                    
+                    //出借人信息
+                     //累计出借
+                    $data_user2['lender_money']=$user2['lender_money']+$info_paper['money'];
                     $m_user->where('id',$user1['id'])->update($data_user1);
                     $m_user->where('id',$user2['id'])->update($data_user2);
                 }
