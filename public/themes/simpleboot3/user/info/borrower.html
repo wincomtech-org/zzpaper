@@ -1,0 +1,81 @@
+<include file="public@head" />
+</head>
+<body>
+     <!-- 个人中心 -->
+     <div class="hasFixedTop">
+        <include file="public@person_head" />
+        <div class="person_con ">
+            <div class="backg-blue daihuai">
+                <ul class="group-person-second group-white">
+                    <li>
+                        <span class="text">待还金额</span>    
+                        <b>{$user.back}</b>
+                    </li>
+                    <li>
+                        <span class="text">累计收益</span>    
+                        <b>{$user.money}</b>
+                    </li>
+                    <li>
+                        <span class="text">累计借款</span>    
+                        <b>{$user.borrower_money}</b>
+                    </li>
+                </ul>
+            </div>
+            <div class="loan_con">
+                <div class="search_div">
+                    <form method="post" action="{:url('user/info/borrower')}">
+                        <input type="text"  name="name" value="{$name}" placeholder='请输入出借人姓名'><button type='submit' class='icon'></button>
+                    </form>
+                </div>
+                <div class="search_con">
+                    <div class='search_con_ul_div'>
+                        <dl>
+                            <dd class=''>出借人</dd>
+                            <dd class=''>借款金额</dd>
+                            <dd class=''>还款期限</dd>
+                        </dl>
+                    </div>   
+                    <ul class='search_con_ul'>
+                    <foreach name="list" item="vo">  
+                        <li>
+                            <div class='search_con_ul_div'>
+                                <dl>
+                                    <dd class=''>{$vo.lender_name}</dd>
+                                    <dd class=''>{$vo.money}</dd>
+                                    <dd class=''>{$vo.start_time|date='Y-m-d',###}</dd>
+                                </dl>
+                            </div>
+                            <ol class="ul_2nd">
+                                <li><a href="{:url('user/info/paper',['id'=>$vo.id])}">查看详情</a></li>
+                                <li><a href="{:url('user/info/protocol',['id'=>$vo.id])}">查看协议</a></li>
+                            </ol>
+                        </li>
+                     </foreach>  
+                        
+                        <p class="show_foot">已经到底了</p>
+                    </ul>
+                    
+                </div>
+            </div>  
+        </div>
+     </div>
+     
+  <include file="public@foot" /> 
+    <script>
+
+        hasFixedTop();
+        function hasFixedTop(){
+            var winHei = $(window).height();
+            var perHeadHei = $('.person_head').height();
+            var daiKuanHei = $('.daihuai').height();
+            var seachDivHei = $('.search_div').height();
+            var seachDivMT = $('.search_div').css('margin-top').split('px')[0];
+            var seachDivMB = $('.search_div').css('margin-bottom').split('px')[0];
+            var seachLi= $('.search_con>.search_con_ul_div').height();
+           
+            $('.search_con_ul').css('height',winHei - perHeadHei - daiKuanHei - seachDivHei - seachDivMT -seachDivMB - seachLi)
+        }
+        
+       
+    </script>
+ 

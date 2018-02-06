@@ -1,0 +1,45 @@
+<!-- 个人中心 -->
+      <nav class="nav-fixed">
+        <dl>
+            <a href="{:url('user/paper/search')}">
+                <dt class='icon icon_menu icon_menu1'></dt>
+                <dd>查信用</dd>
+            </a>
+        </dl>
+        
+        <dl >
+            <a href="javascript:void(0);" class='show_position'>
+                <dt class='icon icon_menu icon_menu2'></dt>
+                <dd>补借条</dd>
+              
+            </a>
+            <div class="show_posi">
+                <a href="{:url('user/paper/send',['send_type'=>0])}">我是借款人</a>
+                <a href="{:url('user/paper/send',['send_type'=>1])}">我是出款人</a>
+                <b></b>
+            </div>
+        </dl>
+        <dl>
+            <a href="javascript:zzmsg();">
+                <dt class='icon icon_menu icon_menu3'></dt>
+                <dd>一键还款</dd>
+            </a>
+        </dl>
+    </nav>
+    <include file="public@foot" /> 
+    <script src="__TMPL__/public/assets/dist/dropload.min.js"></script>
+    <script src="__TMPL__/public/assets/js/dropscroll.js"></script> 
+    <script>
+        hasnav();
+        function hasnav(){
+            var navHei=$('.nav-fixed').height();
+            var docHei= $(window).height();
+            var perHeadHei=$('.person_head').height();
+            var dkHei=$('.daihuai').height();
+            var conHei=$('.content_nav').height();
+
+            $('.content_div').height(docHei - navHei - perHeadHei - dkHei -conHei );
+        }
+        
+       
+    </script>

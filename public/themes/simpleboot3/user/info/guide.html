@@ -1,0 +1,33 @@
+<include file="public@head" />
+</head>
+<body>
+     <!-- 个人中心 -->
+        <ul class="guide">
+         <foreach name="list" item="vo">
+            <li>
+                <div class="guide_tit padding-all red">
+                    <strong>{$vo.title}</strong>   
+                    <span class="icon icon-mess icon-mess7 guide_btn"></span>
+                </div>
+                <div class="guide_con padding-all" style="display:none;">
+                    <p>{$vo.content|htmlspecialchars_decode}</p>
+                </div>
+            </li>
+          </foreach>
+            
+        </ul>
+          <include file="public@user_foot" />       
+<script>
+    $('.guide_btn').click(function(){
+        if($(this).hasClass('icon-mess7')){
+            $(this).parents('.guide_tit ').siblings('.guide_con ').show();
+            $(this).parents('li ').addClass('auto');
+            $(this).removeClass('icon-mess7').addClass('icon-mess8')
+        }else{
+            $(this).removeClass('icon-mess8').addClass('icon-mess7');
+            $(this).parents('.guide_tit ').siblings('.guide_con ').hide();
+            $(this).parents('li ').removeClass('auto');
+        }
+    })
+</script>
+ 
