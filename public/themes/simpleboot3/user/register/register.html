@@ -29,6 +29,17 @@
                     <div class='box-tit'>手机号：</div>
                     <div class='box-con'><input type="text" name='tel' placeholder='请输入正确手机号' required></div>
                 </li>
+                 <li class="box-li padding-all box-con-relative">
+                    <div class='box-tit'>短信验证码：</div>
+                    <div class='box-con '>
+                        <input type="text" name='sms' placeholder='请输入验证码' required>
+                        <div class="identifying">
+                           
+                           <a href="javascript:void(0);" class="btn-small btn-red">发送短信</a>  
+                           <a href="javascript:void(0);" class="btn-small backg-gray" style="display:none;">已发送<span id="sms_msg">60</span>s</a>    
+                        </div>
+                    </div>
+                </li>
                 <p class='tip '>根据国家规定，为了您的信息安全，请填写实名信息</p>
                 <p class='error-tip box-p red'></p>
             </ul>
@@ -41,25 +52,60 @@
    
 <include file="public@foot" />
 <script>
-$('#custorm_dates').submit(function(){
-	$('.error-tip').text('正在注册');
-	 
+ 
+$('a.btn-red').click(function(){ 
+	$('.error-tip').text('');
+	var tel=$.trim($('input[name=tel]').val()); 
+	send_msg(tel);
+});
+function send_msg(tel){ 
+	if(tel=='' || isPhoneNo(tel) == false){ 
+		$('.error-tip').text('请先填写正确的手机号码');
+		return false;
+	}
+	$.ajax({
+        type: 'POST',
+        url: "{:url('user/register/sendmsg')}",
+        dataType: 'json',
+        data:{'tel':tel},
+        success: function(data){
+        	if(data.msg=='success'){
+        		$('.btn-small').hide();
+        		$('.backg-gray').show();
+        		 sms_msg();
+        	}else{
+        		$('.error-tip').text(data.msg); 
+        	} 
+        },
+        error: function(){
+        	$('.error-tip').text('服务器连接失败'); 
+        }
+    });
+	return false;
+	
+}
+
+$('#custorm_dates').submit(function(){ 
 	var username=$.trim($('input[name=identity_name]').val());
 	var idcard=$.trim($('input[name=identity_num]').val());
 	var password=$.trim($('input[name=password]').val());
 	var qq=$.trim($('input[name=qq]').val());
 	var tel=$.trim($('input[name=tel]').val());
-	
-   
- $.post("{:url('user/register/ajaxRegister')}",
-		 {'username':username,'idcard':idcard,'password':password,'qq':qq,'tel':tel},
-		 function(data){
-			console.log(data); 
+	var sms=$.trim($('input[name=sms]').val());
+    if(sms=='' || isSms(sms)==false){
+    	$('.error-tip').text('短信验证码错误');
+    	return false;
+    }
+    
+    $('.error-tip').text('正在注册');
+    $.post("{:url('user/register/ajaxRegister')}",
+		 {'username':username,'idcard':idcard,'password':password,'qq':qq,'tel':tel,'sms':sms},
+		 function(data){ 
 		  	 if(data.code==1){
 				//返回上一页并刷新
 				self.location="{:url('user/index/index')}";
 			}else{ 
-				$('.error-tip').text(data.msg); 
+				$('.error-tip').text(data.msg);  
 			} 
 	});
 	return false;
