@@ -181,7 +181,7 @@ class PaperController extends UserBaseController
             Db::name('reply')->insert($data_reply);
         } catch (\Exception $e) {
             Db::rollBack();
-            $this->error('补借条失败，请重试');
+            $this->error('补借条失败，请重试!'.$e->getMessage());
         }
         
         Db::commit();
