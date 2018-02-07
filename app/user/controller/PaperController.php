@@ -90,7 +90,7 @@ class PaperController extends UserBaseController
         }
         $data0=$this->request->param();   
         $time=time();
-        $today=date('Ymd',$time);
+        $today=date('Ymd',$time); 
         //判断时间
         $data=[ 
             'end_time'=>strtotime($data0['end']),
@@ -180,17 +180,10 @@ class PaperController extends UserBaseController
         Db::startTrans();
         try {
             $m_paper->insert($data);
-            //Db::name('reply')->insert($data_reply);
-        } catch (\Exception $e) {
-            Db::rollBack();
-            $this->error('补借条失败，请重试!'.$e->getMessage());
-        }
-        try {
-            //$m_paper->insert($data);
             Db::name('reply')->insert($data_reply);
         } catch (\Exception $e) {
             Db::rollBack();
-            $this->error('补借条申请失败，请重试!'.$e->getMessage());
+            $this->error('补借条失败，请重试!'.$e->getMessage());
         }
         
         Db::commit();
