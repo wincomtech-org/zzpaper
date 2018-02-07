@@ -1,7 +1,7 @@
 <include file="public@head" />
 </head>
 <body>
-    <section class='main'>
+  
         <form action="" id='loan_detail'>
             <ul class='box form-box box-right'>
                 <li class="box-li padding-all">
@@ -29,12 +29,12 @@
                 </li>
                 <li class="box-li padding-all">
                     <div class='box-tit'>年转化率</div>
-                    <div class='box-con'><span class='drop_down_btn'>{$info_paper.rate}%</span> </div>
+                    <div class='box-con'><span class='drop_down_btn annual_rate '>{$info_paper.rate}%</span> </div>
                 </li>
                 
                 <li class="box-li padding-all">
                     <div class='box-tit'>借款用途：</div>
-                    <div class='box-con'><span class='drop_down_btn'>{$info_paper.use}</span>  </div>
+                    <div class='box-con'><span class='drop_down_btn usage_loan'>{$info_paper.use}</span>  </div>
                 </li>
                 <li class="box-li padding-all box-li-long">
                     <div class='box-tit'>借条状态：</div>
@@ -47,11 +47,7 @@
                 
                 <li class="box-li padding-all box-li-long">
                     <div class='box-tit gray'>申请人：</div>
-               		<div class='box-con'><input type="text" value="<eq name='info_reply.is_borrower' value='1'>
-                           		{$info_paper.borrower_name} 
-                           	<else/>
-                           	 	{$info_paper.lender_name} 
-                           	</eq>"  readonly></div>
+               		<div class='box-con'><input type="text" value="<eq name='info_reply.is_borrower' value='1'>{$info_paper.borrower_name}<else/>{$info_paper.lender_name}</eq>"  readonly></div>
                 </li>
                 <li class="box-li padding-all box-li-long">
                     <div class='box-tit gray'>申请时间：</div>
@@ -162,8 +158,6 @@
                 <li><a href="javascript:void(0);" class='blue-text sure-btn-2'>确定</a></li>
             </ul>
         </div> 
- 
-    </section>
 
    <include file="public@foot" />    
     <script>
@@ -208,6 +202,7 @@
                 	 
                 }
             });
+            return false;
         });
 
      </script>

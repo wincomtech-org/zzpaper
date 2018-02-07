@@ -171,10 +171,14 @@
     background-repeat:no-repeat;
     display:inline-block;
     vertical-align:middle;
+    
 }
 .icon-mess{
     width:28px;
     height:28px;
+}
+.icon.icon-mess0{
+    background-position:2px -138px;
 }
 .icon.icon-mess1{
     background-position:1px -51px;
@@ -308,7 +312,11 @@
 /* 使用手册 */
 .guide_tit{
     position:relative;
-    background-color:#e5e5e5;
+    background-color:#fff;
+    
+}
+.auto .guide_tit{
+    background-color:#efefef;
 }
 .guide li.auto{
     height:auto;
@@ -324,9 +332,19 @@
     position:absolute;
     right:0;
     top:5px;
+    transition:all .4s ease-in-out;
 }
+
+.auto .guide_tit .icon{
+    transform-style:preserve-3d;
+    transform:translateY(-50%) rotate(-90deg);
+    -webkit-transform-origin:23px 23px;
+    transform-origin:23px 23px;
+   
+}
+
 .guide_con {
-    transition:all .2s;
+    /* transition:all .4s ease-in-out; */
 }
 .guide_con  p{
     line-height:1.8;
@@ -350,13 +368,14 @@
     width:15rem;
     max-width:400px;
     border:1px solid #ddd;
-    padding:.6rem;
+    padding-top:.6rem;
 }
 .pop_up p{
     display:block;
     margin:7px 0;
     text-align:center;
     line-height:1.6;
+    
 }
 .pop_up_ul{
     padding-top:.8rem;
@@ -373,6 +392,7 @@
 /* 弹出框 */
 .pop_up_inputs .promit-p {
     position:relative;
+    padding:0 .5rem;
 }
 .promit-p{
     font-size:13px;
@@ -407,7 +427,7 @@
 
 .pop_up_inputs b{
     position: absolute;
-    right: 7px;
+    right: 14px;
     top: 5px;
 }
 /* 修改头像 */
@@ -448,6 +468,16 @@
 /* 补借条 */
 .box-li-long .box-tit{
     width:8rem;
+}
+.box-li-to-long .box-tit{
+    width:16rem;
+}
+.box-li-to-long .box-con{
+    width:-webkit-calc(100% - 16rem);
+    width:-moz-calc(100% - 16rem);
+    width:-ms-calc(100% - 16rem);
+    width:-o-calc(100% - 16rem);
+    width:calc(100% - 16rem);
 }
 .box-li-long .box-con{
     width:-webkit-calc(100% - 8rem);

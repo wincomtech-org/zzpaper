@@ -44,11 +44,11 @@
                         <div class='box-tit'>借条状态：</div>
                         <div class='box-con'><input type="text" name='identity_name' value='{$paper.status_name}' class='red' readonly></div>
                     </li>
-                    <li class="box-li padding-all box-li-long">
+                    <li class="box-li padding-all">
                         <div class='box-tit '>相关申请<empty name="replys">-无</empty></div>
                     </li>
            <foreach name="replys" item="vo">
-            		<li class="box-li padding-all box-li-long">
+            		<li class="box-li padding-all box-li-long  box-li-to-long">
                         <div class='box-tit gray'>
                         	{$reply_types[$vo.type]}
                         	（{$reply_status[$vo.status]}

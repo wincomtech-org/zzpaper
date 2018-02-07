@@ -18,16 +18,18 @@
         </ul>
           <include file="public@user_foot" />       
 <script>
-    $('.guide_btn').click(function(){
-        if($(this).hasClass('icon-mess7')){
-            $(this).parents('.guide_tit ').siblings('.guide_con ').show();
-            $(this).parents('li ').addClass('auto');
-            $(this).removeClass('icon-mess7').addClass('icon-mess8')
-        }else{
-            $(this).removeClass('icon-mess8').addClass('icon-mess7');
-            $(this).parents('.guide_tit ').siblings('.guide_con ').hide();
+    $('.guide_tit').click(function(){
+        if($(this).parents('li').hasClass('auto')){
+           
             $(this).parents('li ').removeClass('auto');
+             $(this).siblings('.guide_con ').hide(600);
+        }else{
+            $('.auto').removeClass('auto');
+            $('.guide_con ').show(600);
+            $(this).parents('li ').addClass('auto');
+            $(this).siblings('.guide_con ').show(600);
         }
+    
     })
 </script>
  

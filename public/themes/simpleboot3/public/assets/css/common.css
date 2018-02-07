@@ -114,7 +114,7 @@ html,body{overflow-x:hidden;}
 .main{
     width:100%;
 }
-.box-sizing,.main,.cofirm_con li,.loan_mess,.search_div input,.promit-input,.agreements{
+.box-sizing,.main,.cofirm_con li,.loan_mess,.search_div input,.promit-input,.agreements,.pop_up p{
     -webkit-box-sizing:border-box;
     -moz-box-sizing:border-box;
     -ms-box-sizing:border-box;

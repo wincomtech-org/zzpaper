@@ -18,12 +18,12 @@
                 </li>
                 <li class="box-li padding-all">
                     <div class='box-tit'>年化率</div>
-                    <div class='box-con'><span class='drop_down_btn' id='drop_down_btn1'>0%</span>    <input type="hidden" name='annual_rate' value='0%'></div>
+                    <div class='box-con'><span class='drop_down_btn' id='drop_down_btn1'>0%</span> <input type="hidden" name='annual_rate' value='0%'></div>
                 </li>
                 
                 <li class="box-li padding-all">
                     <div class='box-tit'>借款用途：</div>
-                    <div class='box-con'><span class='drop_down_btn' id='drop_down_btn2'>借款用途</span> <input type="hidden" name='usage_loan' value='借款用途'></div>
+                    <div class='box-con'><span class='drop_down_btn' id='drop_down_btn2'>买房</span> <input type="hidden" name='usage_loan' value='借款用途'></div>
                 </li>
                 <li class="box-li padding-all box-li-long">
                     <div class='box-tit'>身份证号(<eq name="send_type" value="1">借款人<else/>出借人</eq>)：</div>
@@ -67,7 +67,7 @@
          <div class="drop_down drop_down2" style="display:none;">
             <p class='drop_down_head'>借款用途 <a class='confirm-btn red'>确定</a></p>
             <div class="drop_down_list">
-                <p class='fixed_li'>借款用途</p>
+                <p class='fixed_li'>买房</p>
                 <ul>
                  <foreach name="$Think.config.use" item="vo">
                     <li>{$vo}</li> 
@@ -100,24 +100,17 @@
         }       
         // 日期插件
         $(function(){
-            
             laydate.render({
                 elem: '#date2',
                 value: GetDateStr(1),
                 istoday: false,
                 min: +1
             });
-         })
+        })
  
-     
-		 //   年利率，借款用途出现的下拉框
-        $('.drop_down_list li').click(function(){
-
-            $('.fixed_li').html($(this).html())
-        }) 
         
-         $('.drop_down_btn').click(function(){
-              var showClass=$(this).attr('id').split('_btn')[0]+$(this).attr('id').split('_btn')[1];
+        $('.drop_down_btn').click(function(){
+            var showClass=$(this).attr('id').split('_btn')[0]+$(this).attr('id').split('_btn')[1];
 
             var showId=$(this).attr('id');
 
@@ -126,16 +119,22 @@
             $('.'+showClass).show();
 
             var _self=$(this);
- 
-            $('.'+showClass).find('.confirm-btn').click(function(){
 
-                var fixed_li=$('.fixed_li').html();  
+            $('.'+ showClass).find('li').click(function(){
+               
+                $('.'+ showClass).find('.fixed_li').html($(this).html())
+            })
+
+            $('.'+ showClass).find('.confirm-btn').click(function(){
+
+                var fixed_li= $('.'+ showClass).find('.fixed_li').html();  
                 $('#'+showId).html(fixed_li); 
                 $('#'+showId).siblings('input[type="hidden"]').val(fixed_li);
 
                 $(this).parents('.drop_down').hide();
             })
-         });
+        });
+
         // 阅读选中
         $('.checkbox-label').click(function(){
           $('#checkbox-label').click();
