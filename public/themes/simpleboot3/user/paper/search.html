@@ -16,46 +16,7 @@
                 <button type="submit" onClick="return formIdentity(this.form);"/>查询</button>
             </div>
         </form>
-     <notempty name="search">
-        <div class="jiekuan_history">
-            <p class='btn-red btn-big'>借款历史</p>
-            <ul class='history-list'>
-                <li>
-                    <span class='list1'>出借人</span>
-                    <span class='list2'>金额</span>
-                    <span class='list3'>借款时间</span>
-                    <span class='list4'>还款时间</span>
-                    <span class='list5'>状态</span>
-                </li>
-             <foreach name="list1" item="vo">
-                <li>
-                    <span class='list1'>{$vo.lender_name}</span>
-                    <span class='list2'>￥{$vo.money}</span>
-                    <span class='list3'>{$vo.start_time|date='Y-m-d',###}</span>
-                    <span class='list4'>{$vo.end_time|date='Y-m-d',###}</span>
-                    <span class='list5'>
-                    {$paper_status[$vo.status]} 
-                   <switch name="vo.status">
-                   		<case value="3">|还剩{$vo.expire_day}天</case>
-                   		<case value="5">|已逾期{$vo.overdue_day}天</case>
-                   </switch>
-                    </span>
-                </li>
-              </foreach>  
-              <foreach name="list2" item="vo">
-                <li>
-                    <span class='list1'>{$vo.lender_name}</span>
-                    <span class='list2'>￥{$vo.money}</span>
-                    <span class='list3'>{$vo.start_time|date='Y-m-d',###}</span>
-                    <span class='list4'>{$vo.end_time|date='Y-m-d',###}</span>
-                    <span class='list5'>
-                    	 已还款|<eq name="vo.overdue_day" value="0">未逾期<else/>逾期{$vo.overdue_day}天</eq>
-                    </span>
-                </li>
-              </foreach>  
-            </ul>
-        </div> 
-      </notempty> 
+     
      </div>
   <include file="public@user_foot"  /> 
     <script>
