@@ -95,6 +95,8 @@ class PaperController extends UserBaseController
         $data=[ 
             'end_time'=>strtotime($data0['end']),
             'start_time'=>strtotime($today),
+            'insert_time'=>$time,
+            'update_time'=>$time,
             'rate'=>$data0['rate'],
             'money'=>$data0['money'],
             'use'=>$data0['use'],
@@ -178,10 +180,17 @@ class PaperController extends UserBaseController
         Db::startTrans();
         try {
             $m_paper->insert($data);
-            Db::name('reply')->insert($data_reply);
+            //Db::name('reply')->insert($data_reply);
         } catch (\Exception $e) {
             Db::rollBack();
             $this->error('补借条失败，请重试!'.$e->getMessage());
+        }
+        try {
+            //$m_paper->insert($data);
+            Db::name('reply')->insert($data_reply);
+        } catch (\Exception $e) {
+            Db::rollBack();
+            $this->error('补借条申请失败，请重试!'.$e->getMessage());
         }
         
         Db::commit();
