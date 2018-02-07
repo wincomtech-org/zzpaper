@@ -115,9 +115,9 @@ class SqlController extends AdminbaseController {
             
              if($msqlback->restore($filename)){
                  zz_log('管理员'.session('ADMIN_ID').'还原了数据库'.$filename,'zz.log');
-                 $this->success('数据备份成功',$url);
+                 $this->success('数据还原成功',$url);
             }else{
-                echo "备份失败! <a href='.$url.'>返回</a>";
+                echo "还原失败! <a href='.$url.'>返回</a>";
             }
         }else{
             echo "文件不存在! <a href='.$url.'>返回</a>";

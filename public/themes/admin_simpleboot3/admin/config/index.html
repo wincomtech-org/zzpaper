@@ -34,19 +34,25 @@
 			<div class="form-group">
 				<label class="col-sm-2 control-label">逾期年利率(整数百分值)<span class="form-required">*</span></label>
 				<div class="col-md-6 col-sm-10">
-					<input type="text" class="form-control" name="rate_overdue"
+					<input type="number" min="0" class="form-control" name="rate_overdue"
 						value="{$info.rate_overdue}" required>
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-sm-2 control-label">可选年利率(用-分隔，如0-1-2-3)<span class="form-required">*</span></label>
+				<label class="col-sm-2 control-label">借款年利率(用-分隔，如0-1-2-3)<span class="form-required">*</span></label>
 				<div class="col-md-6 col-sm-10">
 					<input type="text" class="form-control" name="rate"
 						value="{$info.rate}" required>
 				</div>
 			</div>
+			 <div class="form-group">
+				<label class="col-sm-2 control-label">借款用途(用-分隔，如大病-买房)<span class="form-required">*</span></label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control" name="use"
+						value="{$info.use}" required>
+				</div>
+			</div>
 			 
-			
 			<div class="form-group">
 				<div class="col-sm-offset-2 col-sm-10">
 				 

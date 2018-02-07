@@ -37,10 +37,11 @@ class ConfigController extends AdminBaseController
         $info=[
             'zztitle'=>config('zztitle'),
             'rate'=>implode('-',config('rate')),
+            'use'=>implode('-',config('use')),
             'tel'=>config('tel'),
             'rate_overdue'=>config('rate_overdue'),
             'company'=>config('company'),
-             
+            
         ];
         $this->assign('info',$info);
         
@@ -67,6 +68,12 @@ class ConfigController extends AdminBaseController
         foreach($data['rate'] as $k=>$v){
             if($v<=0 && $v!=='0'){
                 $this->error('利率只能为大于等于0的整数，用-分隔');
+            }
+        }
+        $data['use']=explode('-',$data['use']);
+        foreach($data['use'] as $k=>$v){
+            if(empty($v)){
+               unset($data[$k]);
             }
         }
        
