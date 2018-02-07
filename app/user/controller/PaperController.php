@@ -88,7 +88,9 @@ class PaperController extends UserBaseController
         if(empty($user0['is_name'])){
             $this->error('没有实名认证，不能补借条'); 
         }
-        $data0=$this->request->param();   
+        $data0=$this->request->param(); 
+        //利率暂时为0
+        $data0['rate']=10;
         $time=time();
         $today=date('Ymd',$time); 
         //判断时间

@@ -53,7 +53,7 @@
 
         <!-- 年利率，借款用途点击出现的下拉框 -->
         <div class="drop_down drop_down1" style="display:none;">
-            <p class='drop_down_head'>年利率 <a class='confirm-btn red'>确定</a></p>
+            <p class='drop_down_head'>年利率-利率暂时为10<a class='confirm-btn red'>确定</a></p>
             <div class="drop_down_list">
                 <p class='fixed_li'>0%</p>
                 <ul>
@@ -194,9 +194,7 @@
                  success: function(data){
                  	$('.error-tip').text(data.msg); 
                  	if(data.url!=''){
-                 		setTimeout(function(){
-                 			location.href=data.url;
-                         },3000);
+                 	   location.href=data.url; 
                  	} 
                  },
                  error: function(xhr, type){
