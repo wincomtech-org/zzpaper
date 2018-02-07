@@ -58,7 +58,7 @@ class RegisterController extends HomeBaseController
             $rules = [ 
                 'user_pass' => 'require|number|length:6', 
                 'mobile'=>'require|number|length:11', 
-                'user_nickname'=>'chs', 
+                'user_nickname'=>'require|chs|min:2', 
             ];
             
              
@@ -70,6 +70,8 @@ class RegisterController extends HomeBaseController
                 'mobile.require' => '手机号码不能为空',
                 'mobile.length'     => '手机号码格式错误',
                 'user_nickname.chs'=>'请填写真实姓名',
+                'user_nickname.require'=>'请填写真实姓名',
+                'user_nickname.min'=>'请填写真实姓名',
             ]);
             
             $data1 = $this->request->post();

@@ -12,6 +12,7 @@ namespace app\user\controller;
 
 use cmf\controller\UserBaseController;
 use think\Db;
+use think\Validate;
 /* 个人中心 */
 class InfoController extends UserBaseController
 {
@@ -287,9 +288,65 @@ class InfoController extends UserBaseController
     }
     /* 实名认证 */
     public function name(){
-        $this->error('暂不开放');
+        
         $this->assign('html_title','实名认证');
         return $this->fetch();
+    }
+    
+    /* 实名认证 */
+    public function ajax_name(){
+        $data=$this->request->param('');
+        $rules = [
+            'psw' => 'require|number|length:6', 
+            'name'=>'require|chs|min:2',
+        ]; 
+        
+        $validate = new Validate($rules);
+        $validate->message([
+            'psw.require' => '密码为6位数字', 
+            'psw.length'     => '密码为6位数字', 
+            'name.chs'=>'请填写真实姓名',
+            'name.min'=>'请填写真实姓名',
+            'name.require'=>'请填写真实姓名',
+        ]);
+        if (!$validate->check($data)) {
+            $this->error($validate->getError());
+        }
+         
+        //判断密码
+        $uid=session('user.id');
+        $m_user=Db::name('user');
+        $user=$m_user->where('id',$uid)->find();
+        $result=zz_psw($user, $data['psw']);
+        if(empty($result[0])){
+            $this->error($result[1],$result[2]);
+        }
+        //已认证
+        if($user['is_name']==1){
+            session('user',$user);
+            $this->error('已认证',url('user/info/index'));
+        }
+         
+        //
+        import('idcard1',EXTEND_PATH);
+        $idcard1= new \Idcard1();
+        if(($idcard1->validation_filter_id_card($data['idcard']))!==true){
+            $this->error('身份证号码非法!');
+        }
+        $tmp=$m_user->where(['user_login'=>['eq',$data['idcard']],'id'=>['neq',$uid]])->find();
+        if(!empty($tmp)){
+            $this->error('身份证号码已被占用');
+        }
+        $data_user=['user_login'=>$data['idcard'],'user_nickname'=>$data['name'],'is_name'=>1];
+        try { 
+            $m_user->where('id',$uid)->update($data_user);
+        } catch (\Exception $e) {
+            $this->error('认证失败，请检查身份信息');
+        }
+        $user=$m_user->where('id',$uid)->find();
+        session('user',$user);
+        $this->error('认证成功',url('user/info/index'));
+        
     }
 
 }
