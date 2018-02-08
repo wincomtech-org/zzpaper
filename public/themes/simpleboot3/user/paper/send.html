@@ -18,12 +18,12 @@
                 </li>
                 <li class="box-li padding-all">
                     <div class='box-tit'>年化率</div>
-                    <div class='box-con'><span class='drop_down_btn' id='drop_down_btn1'>0%</span> <input type="hidden" name='annual_rate' value='0%'></div>
+                    <div class='box-con'><span class='drop_down_btn' id='drop_down_btn1'>0%</span>    <input type="hidden" name='annual_rate' value='0%'></div>
                 </li>
                 
                 <li class="box-li padding-all">
                     <div class='box-tit'>借款用途：</div>
-                    <div class='box-con'><span class='drop_down_btn' id='drop_down_btn2'>买房</span> <input type="hidden" name='usage_loan' value='借款用途'></div>
+                    <div class='box-con'><span class='drop_down_btn' id='drop_down_btn2'>借款用途</span> <input type="hidden" name='usage_loan' value='借款用途'></div>
                 </li>
                 <li class="box-li padding-all box-li-long">
                     <div class='box-tit'>身份证号(<eq name="send_type" value="1">借款人<else/>出借人</eq>)：</div>
@@ -53,7 +53,7 @@
 
         <!-- 年利率，借款用途点击出现的下拉框 -->
         <div class="drop_down drop_down1" style="display:none;">
-            <p class='drop_down_head'>年利率 <a class='confirm-btn red'>确定</a></p>
+            <p class='drop_down_head'>年利率-利率暂时为10<a class='confirm-btn red'>确定</a></p>
             <div class="drop_down_list">
                 <p class='fixed_li'>0%</p>
                 <ul>
@@ -67,7 +67,7 @@
          <div class="drop_down drop_down2" style="display:none;">
             <p class='drop_down_head'>借款用途 <a class='confirm-btn red'>确定</a></p>
             <div class="drop_down_list">
-                <p class='fixed_li'>买房</p>
+                <p class='fixed_li'>借款用途</p>
                 <ul>
                  <foreach name="$Think.config.use" item="vo">
                     <li>{$vo}</li> 
@@ -100,109 +100,112 @@
         }       
         // 日期插件
         $(function(){
+            
             laydate.render({
                 elem: '#date2',
                 value: GetDateStr(1),
                 istoday: false,
                 min: +1
             });
-        })
+         });
  
+     
+         $('.drop_down_btn').click(function(){
+             var showClass=$(this).attr('id').split('_btn')[0]+$(this).attr('id').split('_btn')[1];
+
+             var showId=$(this).attr('id');
+
+             $('.drop_down').hide();
+
+             $('.'+showClass).show();
+
+             var _self=$(this);
+
+             $('.'+ showClass).find('li').click(function(){
+                
+                 $('.'+ showClass).find('.fixed_li').html($(this).html())
+             });
+
+             $('.'+ showClass).find('.confirm-btn').click(function(){
+
+                 var fixed_li= $('.'+ showClass).find('.fixed_li').html();  
+                 $('#'+showId).html(fixed_li); 
+                 $('#'+showId).siblings('input[type="hidden"]').val(fixed_li);
+
+                 $(this).parents('.drop_down').hide();
+             });
+         });
+
+         // 阅读选中
+         $('.checkbox-label').click(function(){
+           $('#checkbox-label').click();
+         });
         
-        $('.drop_down_btn').click(function(){
-            var showClass=$(this).attr('id').split('_btn')[0]+$(this).attr('id').split('_btn')[1];
+         // 借条表单验证
+         function formloan(form){
+         	 var money=$.trim($('input[name="borrowing_balance"]').val());
+         	 var idcard=$.trim($('input[name="identity_num"]').val());
+         	 var send_type=$.trim($('input[name="send_type"]').val());
+         	 var rate=$.trim($('input[name="annual_rate"]').val().split('%')[0]);
+         	 var use=$.trim($('input[name="usage_loan"]').val());
+         	 
+         	 var end=$.trim($('input[name="repayment_date"]').val());
+         
+             if(money=='' || isMoney(money) == false){
+                 $('.error-tip').text('提示：请输入正确金额');
+                 $('input[name="borrowing_balance"]').focus();
+                 return false;
+             }else   if(idcard == '' || isCardNo(idcard) == false){
+  				$('input[name="identity_num"]').focus(); 
+                 $('.error-tip').text('提示：请输入正确的身份证号码'); 
+                 return false;
+             }else if($('input[type="checkbox"]').prop('checked')== false){
+                 $('.error-tip').text('提示：请确认已阅读用户协议');
+                 return false;
+             }
+             $('.pop_up .promit-html').text('你确定要发起借条吗？');
+             $('.error-tip').text(''); 
+             $('.pop_up').show();
 
-            var showId=$(this).attr('id');
 
-            $('.drop_down').hide();
-
-            $('.'+showClass).show();
-
-            var _self=$(this);
-
-            $('.'+ showClass).find('li').click(function(){
-               
-                $('.'+ showClass).find('.fixed_li').html($(this).html())
-            })
-
-            $('.'+ showClass).find('.confirm-btn').click(function(){
-
-                var fixed_li= $('.'+ showClass).find('.fixed_li').html();  
-                $('#'+showId).html(fixed_li); 
-                $('#'+showId).siblings('input[type="hidden"]').val(fixed_li);
-
-                $(this).parents('.drop_down').hide();
-            })
-        });
-
-        // 阅读选中
-        $('.checkbox-label').click(function(){
-          $('#checkbox-label').click();
-        })
-       
-        // 借条表单验证
-        function formloan(form){
-        	 var money=$.trim($('input[name="borrowing_balance"]').val());
-        	 var idcard=$.trim($('input[name="identity_num"]').val());
-        	 var send_type=$.trim($('input[name="send_type"]').val());
-        	 var rate=$.trim($('input[name="annual_rate"]').val());
-        	 var use=$.trim($('input[name="usage_loan"]').val());
-        	 
-        	 var end=$.trim($('input[name="repayment_date"]').val());
-        	 
-            if(money=='' || isMoney(money) == false){
-                $('.error-tip').text('提示：请输入正确金额');
-                $('input[name="borrowing_balance"]').focus();
-                return false;
-            }else   if(idcard == '' || isCardNo(idcard) == false){
- 				$('input[name="identity_num"]').focus(); 
-                $('.error-tip').text('提示：请输入正确的身份证号码'); 
-                return false;
-            }else if($('input[type="checkbox"]').prop('checked')== false){
-                $('.error-tip').text('提示：请确认已阅读用户协议');
-                return false;
-            }
-            $('.pop_up .promit-html').text('你确定要发起借条吗？');
-            $('.error-tip').text(''); 
-            $('.pop_up').show();
+         
+             
+             return false;
+         }
+         // 输入密码，确定
+         $('.sure-btn-2').click(function(){
+         	$('.error-tip').text(''); 
+         	 var money=$.trim($('input[name="borrowing_balance"]').val());
+         	 var idcard=$.trim($('input[name="identity_num"]').val());
+         	 var send_type=$.trim($('input[name="send_type"]').val());
+         	 var rate=parseInt($('input[name="annual_rate"]').val().split('%')[0]);
+         	 var use=$.trim($('input[name="usage_loan"]').val());
+         	 var end=$.trim($('input[name="repayment_date"]').val());
+             var psw=$.trim($('.promit-input').val());
             
-            
-            return false;
-        }
-        // 输入密码，确定
-        $('.sure-btn-2').click(function(){
-        	$('.error-tip').text(''); 
-        	 var money=$.trim($('input[name="borrowing_balance"]').val());
-        	 var idcard=$.trim($('input[name="identity_num"]').val());
-        	 var send_type=$.trim($('input[name="send_type"]').val());
-        	 var rate=$.trim($('input[name="annual_rate"]').val());
-        	 var use=$.trim($('input[name="usage_loan"]').val());
-        	 var end=$.trim($('input[name="repayment_date"]').val());
-            var psw=$.trim($('.promit-input').val());
-           
-            if(psw==''){
-            	return false;
-            }
-            $('.pop_up').hide();
-            //ajax提交
-            $.ajax({
-                type: 'POST',
-                url: "{:url('user/paper/sendPost')}",
-                dataType: 'json',
-                data:{'psw':psw,'money':money,'idcard':idcard,'send_type':send_type,'rate':rate,'use':use,'end':end},
-                success: function(data){
-                	$('.error-tip').text(data.msg); 
-                	if(data.url!=''){
-                		setTimeout(function(){
-                			location.href=data.url;
-                        },3000);
-                	} 
-                },
-                error: function(xhr, type){
-                	$('.error-tip').text('服务器连接失败'); 
-                    
-                } 
-            });
-        });
-     </script>
  
+            return false;
+             if(psw==''){
+             	return false;
+             }
+             $('.pop_up').hide();
+             //ajax提交
+             $.ajax({
+                 type: 'POST',
+                 url: "{:url('user/paper/sendPost')}",
+                 dataType: 'json',
+                 data:{'psw':psw,'money':money,'idcard':idcard,'send_type':send_type,'rate':rate,'use':use,'end':end},
+                 success: function(data){
+                 	$('.error-tip').text(data.msg); 
+                 	if(data.url!=''){
+                 	   location.href=data.url; 
+                 	} 
+                 },
+                 error: function(xhr, type){
+                 	$('.error-tip').text('服务器连接失败');  
+                 } 
+             });
+             return false;
+         });
+      </script>
+  

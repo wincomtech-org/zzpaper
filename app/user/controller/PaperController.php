@@ -88,13 +88,17 @@ class PaperController extends UserBaseController
         if(empty($user0['is_name'])){
             $this->error('没有实名认证，不能补借条'); 
         }
-        $data0=$this->request->param();   
+        $data0=$this->request->param(); 
+        //利率暂时为0
+        $data0['rate']=10;
         $time=time();
-        $today=date('Ymd',$time);
+        $today=date('Ymd',$time); 
         //判断时间
         $data=[ 
             'end_time'=>strtotime($data0['end']),
             'start_time'=>strtotime($today),
+            'insert_time'=>$time,
+            'update_time'=>$time,
             'rate'=>$data0['rate'],
             'money'=>$data0['money'],
             'use'=>$data0['use'],
@@ -181,7 +185,7 @@ class PaperController extends UserBaseController
             Db::name('reply')->insert($data_reply);
         } catch (\Exception $e) {
             Db::rollBack();
-            $this->error('补借条失败，请重试');
+            $this->error('补借条失败，请重试!'.$e->getMessage());
         }
         
         Db::commit();

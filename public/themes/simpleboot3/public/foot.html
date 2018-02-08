@@ -4,6 +4,22 @@
 	function psw_hide(){
 		$('.pop_up').hide();
 	}
+	//6位验证码
+	function isSms(sms){
+	    var pattern=/^\d{6}$/;
+	    return pattern.test(sms);
+	}
+	function sms_msg(){
+		var s=parseInt($('#sms_msg').text());
+		if(s<=1){
+			$('.btn-small').hide();
+			$('.btn-red').show(); 
+			return ;
+		}
+		$('#sms_msg').text(s-1);
+		 
+		setTimeout('sms_msg()',1000);
+	}
 	</script>
 </body>
 </html>

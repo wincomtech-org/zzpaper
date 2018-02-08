@@ -13,7 +13,8 @@ namespace app\user\controller;
 use cmf\controller\HomeBaseController;
 use think\Validate;
 use think\Db;
-use app\user\model\UserModel;
+ 
+use sms\Msg;
 
 class RegisterController extends HomeBaseController
 {
@@ -47,7 +48,27 @@ class RegisterController extends HomeBaseController
        return $this->fetch();
          
     }
-
+    /**
+     * 发送验证码
+     */
+    public function sendmsg()
+    { 
+        $phone=$this->request->param('tel',0);
+        $type=$this->request->param('type','reg');
+        $tmp=Db::name('user')->where('mobile',$phone)->find();
+        if($type=='reg'){ 
+            if(!empty($tmp)){
+                $this->error('该手机号已被使用');
+            }
+        }elseif($type=='find'){
+            if(empty($tmp)){
+                $this->error('该手机号不存在');
+            }
+        }
+        $msg=new Msg();
+         
+        $this->error($msg->reg($phone,rand(100000,999999)));
+    }
     
     /**
      * 前台用户注册提交
@@ -58,10 +79,8 @@ class RegisterController extends HomeBaseController
             $rules = [ 
                 'user_pass' => 'require|number|length:6', 
                 'mobile'=>'require|number|length:11', 
-                'user_nickname'=>'chs', 
-            ];
-            
-             
+                'user_nickname'=>'require|chs|min:2', 
+            ]; 
             $redirect                = url('user/index/index');
             $validate = new Validate($rules);
             $validate->message([ 
@@ -70,6 +89,8 @@ class RegisterController extends HomeBaseController
                 'mobile.require' => '手机号码不能为空',
                 'mobile.length'     => '手机号码格式错误',
                 'user_nickname.chs'=>'请填写真实姓名',
+                'user_nickname.require'=>'请填写真实姓名',
+                'user_nickname.min'=>'请填写真实姓名',
             ]);
             
             $data1 = $this->request->post();
@@ -88,6 +109,12 @@ class RegisterController extends HomeBaseController
             if (!$validate->check($data)) {
                 $this->error($validate->getError());
             }
+            //验证码
+            $msg=new Msg();
+            $sms=$msg->verify($data['mobile'],$data1['sms']);
+            if($sms!='success'){
+                $this->error($sms);
+            }
             import('idcard1',EXTEND_PATH);
             $idcard1= new \Idcard1();
             if(($idcard1->validation_filter_id_card($data['user_login']))!==true){
@@ -96,6 +123,7 @@ class RegisterController extends HomeBaseController
             if(preg_match(config('reg_mobile'), $data['mobile'])!=1){
                 $this->error('手机号码错误');
             }
+            
             $data['user_pass'] = cmf_password($data['user_pass']);
             $result = $this->validate($data, 'User');
             if ($result !== true) {
@@ -104,7 +132,8 @@ class RegisterController extends HomeBaseController
                
                 $result             = Db::name('user')->insertGetId($data);
                 if ($result !== false) {
-                    cmf_update_current_user($result);
+                    $data   = Db::name("user")->where('id', $result)->find();
+                    cmf_update_current_user($data);
                     $this->success("注册成功！");
                 } else {
                     $this->error("注册失败！");
