@@ -29,7 +29,7 @@ class TimeController extends HomeBaseController
         //判断重复任务
         if(strtotime($time_day)===$time){
             zz_log('重复任务，结束','time.log');
-            exit;
+            exit('重复任务，结束');
         }else{
             cmf_set_dynamic_config(['time_day'=>date('Y-m-d')]);
         }
