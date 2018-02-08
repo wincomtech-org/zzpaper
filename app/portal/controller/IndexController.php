@@ -30,8 +30,8 @@ class IndexController extends HomeBaseController
             $index0= urlencode($index);
             $scope='snsapi_userinfo';
             
-            $code = $_GET["code"];
-            if(empty($code)){ 
+            
+            if(empty($_GET["code"])){ 
                //开始只获取openid 
                 $scope='snsapi_base';
                 $url0='https://open.weixin.qq.com/connect/oauth2/authorize?appid='.$appid.
@@ -40,7 +40,7 @@ class IndexController extends HomeBaseController
                 header("Location: ".$url0);
                 exit('正在获取微信授权openid');
             }
-            
+            $code = $_GET["code"];
             $scope=session('wx.scope');
             //判断是获取用户信息还是基本信息
             if($scope=='snsapi_base'){
