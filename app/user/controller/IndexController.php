@@ -32,8 +32,7 @@ class IndexController extends UserBaseController
        ->alias('r')
        ->field('r.*,p.money as p_money,p.rate as p_rate')
        ->join('cmf_paper p','p.oid=r.oid')
-       ->where(['r.is_overtime'=>0,'r.status'=>0])
-       ->whereOr(['p.borrower_id|p.lender_id'=>$uid])
+       ->where(['r.is_overtime'=>0,'r.status'=>0,'p.borrower_id|p.lender_id'=>$uid]) 
        ->order('id desc')
        ->select();
        
