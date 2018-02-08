@@ -153,6 +153,8 @@ class AdminIndexController extends AdminBaseController
             $this->error('用户不存在');
         }
         
+        $info['wx_more']=json_decode($info['more'],true);
+        
         $this->assign('info',$info);
         return $this->fetch();
     }

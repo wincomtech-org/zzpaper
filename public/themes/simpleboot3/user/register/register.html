@@ -20,7 +20,10 @@
                     <div class='box-tit'>确认密码</div>
                     <div class='box-con'><input type="text" name='password_repeat' placeholder='请再次填写密码' required></div>
                 </li>
-                
+                <li class="box-li padding-all">
+                    <div class='box-tit'>微信号：</div>
+                    <div class='box-con'><input type="text" name='weixin' placeholder='请输入微信号'></div>
+                </li>
                 <li class="box-li padding-all">
                     <div class='box-tit'>QQ号：</div>
                     <div class='box-con'><input type="text" name='qq' placeholder='请输入QQ号'></div>
@@ -90,6 +93,7 @@ $('#custorm_dates').submit(function(){
 	var idcard=$.trim($('input[name=identity_num]').val());
 	var password=$.trim($('input[name=password]').val());
 	var qq=$.trim($('input[name=qq]').val());
+	var weixin=$.trim($('input[name=weixin]').val());
 	var tel=$.trim($('input[name=tel]').val());
 	var sms=$.trim($('input[name=sms]').val());
     if(sms=='' || isSms(sms)==false){
@@ -99,7 +103,7 @@ $('#custorm_dates').submit(function(){
     
     $('.error-tip').text('正在注册');
     $.post("{:url('user/register/ajaxRegister')}",
-		 {'username':username,'idcard':idcard,'password':password,'qq':qq,'tel':tel,'sms':sms},
+		 {'username':username,'idcard':idcard,'password':password,'qq':qq,'tel':tel,'sms':sms,'weixin':weixin},
 		 function(data){ 
 		  	 if(data.code==1){
 				//返回上一页并刷新

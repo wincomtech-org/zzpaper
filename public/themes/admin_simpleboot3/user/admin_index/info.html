@@ -53,6 +53,16 @@
 					<input type="text" class="form-control"  value="{$info.weixin}" readonly /> 
 				</div>
 			</div>
+			<div style="clear: both"></div>
+			<div class="form-group ">
+				<label class="col-sm-2 control-label">微信信息详情</label>
+				<div class="col-md-6 col-sm-10">
+					<foreach name="info.wx_more" item="vo" k="key">
+					 <p>{$key}:{$vo}</p>
+					</foreach>
+					
+				</div>
+			</div>
 			<div class="form-group fleft">
 				<label class="col-sm-2 control-label">注册时间</label>
 				<div class="col-md-6 col-sm-10">
@@ -73,9 +83,40 @@
 				</div>
 			</div>
 			<div class="form-group fleft">
+				<label class="col-sm-2 control-label">逾期金额</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control"  value="{$info.overdue1_money}" readonly /> 
+				</div>
+			</div>
+			<div class="form-group fleft">
 				<label class="col-sm-2 control-label">逾期7天次数</label>
 				<div class="col-md-6 col-sm-10">
 					<input type="text" class="form-control"  value="{$info.overdue7}" readonly /> 
+				</div>
+			</div>
+			<div class="form-group fleft">
+				<label class="col-sm-2 control-label">逾期7天金额</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control"  value="{$info.overdue7_money}" readonly /> 
+				</div>
+			</div>
+			<div class="form-group fleft">
+				<label class="col-sm-2 control-label">待还金额</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control"  value="{$info.back}" readonly /> 
+				</div>
+			</div>
+			<div class="form-group fleft">
+				<label class="col-sm-2 control-label">待收金额</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control"  value="{$info.send}" readonly /> 
+				</div>
+			</div>
+			
+			<div class="form-group fleft">
+				<label class="col-sm-2 control-label">累计借款次数</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control"  value="{$info.borrow_num}" readonly /> 
 				</div>
 			</div>
 			<div class="form-group fleft">
@@ -84,7 +125,24 @@
 					<input type="text" class="form-control"  value="{$info.borrow_man}" readonly /> 
 				</div>
 			</div>
-			 
+			 <div class="form-group fleft">
+				<label class="col-sm-2 control-label">累计借款金额</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control"  value="{$info.borrow_money}" readonly /> 
+				</div>
+			</div>
+			<div class="form-group fleft">
+				<label class="col-sm-2 control-label">累计出借金额</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control"  value="{$info.lender_money}" readonly /> 
+				</div>
+			</div>
+			<div class="form-group fleft">
+				<label class="col-sm-2 control-label">累计收益</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control"  value="{$info.money}" readonly /> 
+				</div>
+			</div>
 			<div style="clear: both"></div>
 			 
 			<div class="form-group">

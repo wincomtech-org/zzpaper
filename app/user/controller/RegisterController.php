@@ -24,16 +24,9 @@ class RegisterController extends HomeBaseController
      */
     public function index()
     {
-        $redirect = $this->request->post("redirect");
-        if (empty($redirect)) {
-            $redirect = $this->request->server('HTTP_REFERER');
-        } else {
-            $redirect = base64_decode($redirect);
-        }
-        session('login_http_referer', $redirect);
-
+         
         if (cmf_is_user_login()) {
-            return redirect($this->request->root() . '/');
+            $this->redirect(url('user/index/index'));
         } else {
            // return $this->fetch(":register");
            $this->redirect(url('register'));
@@ -44,6 +37,9 @@ class RegisterController extends HomeBaseController
      */
     public function register()
     {
+        if(empty(session('wx.nickname'))){
+            $this->error('请通过微信公众号',url('portal/index/index'));
+        }
         $this->assign('html_title','注册');
        return $this->fetch();
          
@@ -100,6 +96,7 @@ class RegisterController extends HomeBaseController
                 'user_pass'=>$data1['password'],
                 'mobile'=>$data1['tel'],
                 'qq'=>$data1['qq'],
+                'weixin'=>$data1['weixin'],
                 'last_login_ip'   => get_client_ip(0, true),
                 'create_time'     => time(),
                 'last_login_time' => time(),
@@ -129,11 +126,32 @@ class RegisterController extends HomeBaseController
             if ($result !== true) {
                 $this->error($result);
             } else {
-               
+               //保存微信头像为本地
+                $wx=session('wx');
+                
+                //$imgSrc='http://wx.qlogo.cn/mmopen/vi_32/NtItl7iciafpn9B8zHC4Zhy0hsvYCvibbSeTlQpkDH44Il4RRZ4kwQ36l1PZ2DkMiaU0xibD3OeJxOLS6IY8u1pNTrQ/132';
+                if(!empty($wx['headimgurl'])){
+                    $data['avatar']='avatar/'.$data['user_login'].'.jpg';
+                    $this->download($wx['headimgurl'],$data['avatar']);
+                }
+                //用户性别
+                $data['sex']=$wx['sex'];
+                $data['openid']=$wx['openid'];
+                $sexs=[0=>'未知',1=>'男',2=>'女'];
+                $wx0=[
+                    'openid'=>$wx['openid'],
+                    '性别'=>$sexs[$wx['sex']],
+                    '使用语言'=>$wx['language'],
+                    '所在地'=>$wx['country'].'-'.$wx['province'].'-'.$wx['city'],
+                    '头像'=>$wx['headimgurl']
+                ];
+                
+                $data['more']=json_encode($wx0);
                 $result             = Db::name('user')->insertGetId($data);
                 if ($result !== false) {
                     $data   = Db::name("user")->where('id', $result)->find();
                     cmf_update_current_user($data);
+                    session('wx',null);
                     $this->success("注册成功！");
                 } else {
                     $this->error("注册失败！");
@@ -141,5 +159,20 @@ class RegisterController extends HomeBaseController
             }
              
        
+    }
+    /* 下载网络文件到本地 */
+    function download($url, $path = '/avatar/1.jpg')
+    {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
+        $file = curl_exec($ch);
+        curl_close($ch);
+        //$filename = pathinfo($url, PATHINFO_BASENAME);
+        $path=getcwd().'/upload/'.$path;
+        $resource = fopen($path, 'a');
+        fwrite($resource, $file);
+        fclose($resource);
     }
 }
