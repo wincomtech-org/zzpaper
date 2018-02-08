@@ -23,6 +23,14 @@ class UserModel extends Model
 
 
         if (!empty($result)) {
+            //拉黑判断。
+            if($result['user_status']==0 ){
+                return 3;
+            }
+            //密码锁定
+            if($result['login_fail']>=6 ){
+                return 4;
+            }
             $comparePasswordResult = cmf_compare_password($user['user_pass'], $result['user_pass']);
             $hookParam =[
                 'user'=>$user,
@@ -30,18 +38,17 @@ class UserModel extends Model
             ];
             hook_one("user_login_start",$hookParam);
             if ($comparePasswordResult) {
-                //拉黑判断。
-                if($result['user_status']==0){
-                    return 3;
-                }
+                 
                 session('user', $result);
                 $data = [
+                    'login_fail'=>0,
                     'last_login_time' => time(),
                     'last_login_ip'   => get_client_ip(0, true),
                 ];
                 $userQuery->where('id', $result["id"])->update($data);
                 return 0;
-            }
+            } 
+            $userQuery->where('id', $result["id"])->setInc('login_fail');
             return 1;
         }
         $hookParam =[
