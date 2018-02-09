@@ -79,11 +79,11 @@ class PaperController extends UserBaseController
         
     }
     /**
-     *补借条执行
+     *补借条执行，废弃
      */
     public function sendPost()
     {
-       
+       $this->error('关闭');
         $user0=Db::name('user')->where('id',session('user.id'))->find();
         if(empty($user0['is_name'])){
             $this->error('没有实名认证，不能补借条'); 
@@ -191,22 +191,159 @@ class PaperController extends UserBaseController
         $this->success('借条已经提交，等待对方确认',url('user/index/index')); 
          
     }
+    /**
+     *补借条,新
+     */
+    public function ajax_send()
+    {
+        
+        $user0=Db::name('user')->where('id',session('user.id'))->find();
+        if(empty($user0['is_name'])){
+            $this->error('没有实名认证，不能补借条');
+        }
+        $data0=$this->request->param();
+        
+        $time=time();
+        $today=date('Ymd',$time);
+        //判断时间
+        $data=[
+            'end_time'=>strtotime($data0['end']),
+            'start_time'=>strtotime($today),
+            'insert_time'=>$time,
+            'update_time'=>$time,
+            'rate'=>$data0['rate'],
+            'money'=>$data0['money'],
+            'use'=>$data0['use'],
+            
+        ];
+        //判断金钱格式
+        if(preg_match(config('reg_psw'),$data0['psw'])!=1){
+            $this->error('密码输入有误');
+        }
+        //判断金钱格式
+        if(preg_match(config('reg_money'),$data['money'])!=1){
+            $this->error('借款金额输入有误');
+        }
+        //计算到期天数
+        $data['expire_day']=bcdiv(($data['end_time']-$data['start_time']),86400,0);
+        if($data['expire_day']<1){
+            $this->error('还款时间最早从明天开始');
+        }
+        
+        //计算利息保存利率为百倍整数，所以360*100=36000
+        $data['real_money']=zz_get_money($data['money'],$data['rate'],$data['expire_day']);
+        
+        //获取对方信息
+        $user11=Db::name('user')->where('user_nickname',$data0['name'])->find();
+        if(empty($user11)){
+            $this->error('对方姓名不存在');
+        }
+        if(empty($user11['is_name'])){
+            $this->error('对方未实名认证，不能补借条');
+        }
+        if($user11['id']==$user0['id']){
+            $this->error('不能借给自己');
+        }
+        
+        //比较密码
+        $result=zz_psw($user0, $data0['psw']);
+        if(empty($result[0])){
+            $this->error($result[1],$result[2]);
+        }
+        $m_paper=Db::name('paper');
+        //对方信息暂不保存
+        $user1=[
+            'id'=>0,
+            'user_nickname'=>$user11['user_nickname'],
+            'user_login'=>'',
+            'mobile'=>'',
+        ];
+        $data['lender_id']=$user1['id'];
+        $data['lender_name']=$user1['user_nickname'];
+        $data['lender_idcard']=$user1['user_login'];
+        $data['lender_mobile']=$user1['mobile'];
+        //判断是借款还是出借
+        if(empty($data0['send_type'])){
+            $count=$m_paper->where(['borrower_id'=>$user0['id'],'start_time'=>$data['start_time']])->count();
+            
+            $data_reply=[
+                'insert_time'=>$time,
+                'update_time'=>$time,
+                'type'=>'send',
+                'is_borrower'=>1,
+                'oid'=>$today.'-'.$user0['id'].'-'.($count+1),
+            ];
+            $data['borrower_id']=$user0['id'];
+            $data['borrower_name']=$user0['user_nickname'];
+            $data['borrower_idcard']=$user0['user_login'];
+            $data['borrower_mobile']=$user0['mobile'];
+           
+            $data['lender_id']=$user1['id'];
+            $data['lender_name']=$user1['user_nickname'];
+            $data['lender_idcard']=$user1['user_login'];
+            $data['lender_mobile']=$user1['mobile'];
+            
+        }else{
+            $count=$m_paper->where(['lender_id'=>$user0['id'],'start_time'=>$data['start_time']])->count();
+            $data_reply=[
+                'insert_time'=>$time,
+                'update_time'=>$time,
+                'type'=>'send',
+                'is_borrower'=>0,
+                'oid'=>$today.'-'.$user1['id'].'-'.($count+1),
+            ];
+            $data['borrower_id']=$user1['id'];
+            $data['borrower_name']=$user1['user_nickname'];
+            $data['borrower_idcard']=$user1['user_login'];
+            $data['borrower_mobile']=$user1['mobile'];
+            $data['lender_id']=$user0['id'];
+            $data['lender_name']=$user0['user_nickname'];
+            $data['lender_idcard']=$user0['user_login'];
+            $data['lender_mobile']=$user0['mobile'];
+        }
+        $data['oid']=$data_reply['oid'];
+        
+        Db::startTrans();
+        try {
+            $m_paper->insert($data);
+            $rid=Db::name('reply')->insert($data_reply);
+        } catch (\Exception $e) {
+            Db::rollBack();
+            $this->error('补借条失败，请重试!'.$e->getMessage());
+        }
+        
+        Db::commit();
+        $this->success('借条已经提交',url('user/paper/qrshow',['id'=>$rid]));
+        
+    }
+    /* 中间页面，显示补借条后的二维码 */
+    public function qrshow(){
+        $id=$this->request->param('id',0,'intval');
+        $url=url('user/paper/confirm',['id'=>$id],true,true);
+        $url_img=url('user/public/qrcode',['url'=>$url]);
+        $this->assign('url_img',$url_img);
+        $this->assign('url',$url);
+        $this->assign('html_title','借条链接');
+        return $this->fetch();
+    }
     /* 申请详情 */
     public function confirm(){
         $id=$this->request->param('id',0,'intval');
         $info_reply=Db::name('reply')->where('id',$id)->find();
         if(empty($info_reply)){
-            $this->error('该申请不存在，刷新');
+            $this->error('该申请不存在');
         }
         $info_paper=Db::name('paper')->where('oid',$info_reply['oid'])->find();
         if(empty($info_paper)){
             $this->error('该借条已完成或已废弃');
         }
         //判断是否显示同意
-        $uid=session('user.id');
+        $user=session('user'); 
         $info_reply['send_type']=0;
         $send_type=0;
-        if(($info_reply['is_borrower']==1 && $info_paper['lender_id']==$uid) || ($info_reply['is_borrower']==0 && $info_paper['borrower_id']==$uid)){
+        //补借条时对方还没有信息
+         //补借条时对方还没有id所以比较name
+        if(($info_reply['is_borrower']==1 && $info_paper['lender_name']==$user['user_nickname']) || ($info_reply['is_borrower']==0 && $info_paper['borrower_name']==$user['user_nickname'])){
             $info_reply['send_type']=1;
         }
         $statuss=config('paper_status');
@@ -234,31 +371,43 @@ class PaperController extends UserBaseController
         if(empty($info_paper)){
             $this->error('该借条已完成或已废弃');
         }
-        //判断密码
-        $uid=session('user.id');
+        //判断密码 
+        $uid=session('user.id'); 
+        
         $m_user=Db::name('user');
         $user=$m_user->where('id',$uid)->find();
         $result=zz_psw($user, $data['psw']);
         if(empty($result[0])){
             $this->error($result[1],$result[2]);
         }
-        if($info_reply['is_borrower']==1 && $info_paper['lender_id']==$uid){
+        if($info_reply['is_borrower']==1 && $info_paper['lender_name']==$user['nickname']){
+            //处理人是出借人
             $user1=$m_user->where('id',$info_paper['borrower_id'])->find();
             $user2=$user;
-        }elseif($info_reply['is_borrower']==0 && $info_paper['borrower_id']==$uid){
+            $data_paper=[
+                'update_time'=>time(),
+                'lender_id'=>$user['id'],
+                'lender_id'=>$user['user_login'],
+            ];
+        }elseif($info_reply['is_borrower']==0 && $info_paper['borrower_name']==$user['nickname']){
             $user2=$m_user->where('id',$info_paper['lender_id'])->find();
             $user1=$user; 
+            $data_paper=[
+                'update_time'=>time(),
+                'borrower_id'=>$user['id'],
+                'borrower_id'=>$user['user_login'],
+            ];
         }else{
             $this->error('无权操作此该借条');
         }
         
         //判断是否显示同意s
-        $data_reply=['update_time'=>time()];  
+        $data_reply=['update_time'=>$data_paper['update_time']];  
         //驳回
         if($data['op']==0){
             $data_reply['status']=2; 
             if($info_reply['type']=='send'){
-                $data_paper=['status'=>1,'update_time'=>$data_reply['update_time']]; 
+                $data_paper['status']=1; 
             }
         }else{
             //同意，处理借条
@@ -266,7 +415,7 @@ class PaperController extends UserBaseController
             
             switch($info_reply['type']){
                 case 'send':
-                    $data_paper=['update_time'=>$data_reply['update_time']];
+                    
                     //预期天数归0，计算到期天数
                     $data_paper['overdue_day']=0;
                     $data_paper['expire_day']=bcdiv(($info_paper['end_time']-strtotime(date('Y-m-d'))),86400,0);
@@ -280,7 +429,7 @@ class PaperController extends UserBaseController
                      
                     break;
                 case 'delay':
-                    $data_paper=['update_time'=>$data_reply['update_time']];
+                    
                     $data_paper['rate']=$info_reply['rate']; 
                     $data_paper['end_time']=$info_paper['end_time']+$info_reply['day']*86400;
                     $data_paper['real_money']=1;

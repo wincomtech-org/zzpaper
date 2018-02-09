@@ -26,8 +26,8 @@
                     <div class='box-con'><span class='drop_down_btn' id='drop_down_btn2'>借款用途</span> <input type="hidden" name='usage_loan' value='借款用途'></div>
                 </li>
                 <li class="box-li padding-all box-li-long">
-                    <div class='box-tit'>身份证号(<eq name="send_type" value="1">借款人<else/>出借人</eq>)：</div>
-                    <div class='box-con'><input type="text" name='identity_num' placeholder='请输入身份证号' required></div>
+                    <div class='box-tit'>对方姓名(<eq name="send_type" value="1">借款人<else/>出借人</eq>)：</div>
+                    <div class='box-con'><input type="text" name='name' placeholder='请输入对方姓名' required></div>
                 </li>
                 <li class="box-li padding-all">
                    <div class="protocol">
@@ -57,8 +57,8 @@
         
         <include file="public@psw" />   
     </section>
-
-    <!-- 年利率，借款用途点击出现的下拉框 -->
+    
+     <!-- 年利率，借款用途点击出现的下拉框 -->
     <div class="drop_down drop_down1" style="display:none;">
         <p class='drop_down_head'>年利率--<span class='fixed_li'>0%</span> <a class='confirm-btn red'>确定</a></p>
         <div class="drop_down_list">
@@ -90,6 +90,7 @@
  
     <script>
  // 日期
+ 	var click=0;
  		//获取当前时间，格式YYYY-MM-DD
         function GetDateStr(AddDayCount){ 
             var dd = new Date();
@@ -149,30 +150,29 @@
          // 借条表单验证
          function formloan(form){
          	 var money=$.trim($('input[name="borrowing_balance"]').val());
-         	 var idcard=$.trim($('input[name="identity_num"]').val());
-         	 
+         	 var name=$.trim($('input[name="name"]').val());
              if(money=='' || isMoney(money) == false){
                  $('.error-tip').text('提示：请输入正确金额');
                  $('input[name="borrowing_balance"]').focus();
                  return false;
-             }else   if(idcard == '' || isCardNo(idcard) == false){
-  				$('input[name="identity_num"]').focus(); 
-                 $('.error-tip').text('提示：请输入正确的身份证号码'); 
+             }if(name=='' || isChinaName(name) == false){
+                 $('.error-tip').text('提示：请输入对方姓名');
+                 $('input[name="name"]').focus();
                  return false;
              }else if($('input[type="checkbox"]').prop('checked')== false){
                  $('.error-tip').text('提示：请确认已阅读用户协议');
                  return false;
              }
              $('.pop_up .promit-html').text('你确定要发起借条吗？');
-             $('.error-tip').text(); 
+             $('.error-tip').text(''); 
              $('.pop_up').show(); 
              return false;
          }
          // 输入密码，确定
          $('.sure-btn-2').click(function(){
-         	 
+         	  
          	 var money=$.trim($('input[name="borrowing_balance"]').val());
-         	 var idcard=$.trim($('input[name="identity_num"]').val());
+         	 var name=$.trim($('input[name="name"]').val());
          	 var send_type=$.trim($('input[name="send_type"]').val());
          	 var rate=parseInt($('input[name="annual_rate"]').val().split('%')[0]);
          	 var use=$.trim($('input[name="usage_loan"]').val());
@@ -185,20 +185,27 @@
                 return false;
             }
              $('.pop_up').hide();
+             if(click==0){
+        		 	click=1;
+ 	       	 }else{
+ 	       		 return false;
+ 	       	 }
              //ajax提交
              $.ajax({
                  type: 'POST',
-                 url: "{:url('user/paper/sendPost')}",
+                 url: "{:url('user/paper/ajax_send')}",
                  dataType: 'json',
-                 data:{'psw':psw,'money':money,'idcard':idcard,'send_type':send_type,'rate':rate,'use':use,'end':end},
+                 data:{'psw':psw,'money':money,'name':name,'send_type':send_type,'rate':rate,'use':use,'end':end},
                  success: function(data){
                  	$('.error-tip').text(data.msg); 
                  	if(data.url!=''){
                  	   location.href=data.url; 
                  	} 
+                 	click=0;
                  },
                  error: function(xhr, type){
                  	$('.error-tip').text('服务器连接失败');  
+                 	click=0;
                  } 
              });
              return false;

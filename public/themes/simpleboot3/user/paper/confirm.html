@@ -161,6 +161,7 @@
 
    <include file="public@foot" />    
     <script>
+    var click=0;
         $('.sure_alert').click(function(){ 
             $('#zzop').val('1');
             $('.promit-html').text('你确定要同意吗');
@@ -173,7 +174,7 @@
         });
         // 输入密码，确定
         $('.sure-btn-2').click(function(){
-           
+        	
             var psw=$.trim($('.promit-input').val());
             var id=$('#zzid').val();
             var op=$('#zzop').val();
@@ -183,7 +184,11 @@
                 $('.pop_up .error-tip').text('请输入6位数字密码'); 
                 return false;
             }
-           
+            if(click==0){
+       		 	click=1;
+	       	 }else{
+	       		 return false;
+	       	 }
             //ajax提交
             $.ajax({
                 type: 'POST',
@@ -193,14 +198,13 @@
                 success: function(data){
                 	$('.error_tip').text(data.msg);
                 	if(data.url!=''){
-                		setTimeout(function(){
-                			location.href=data.url;
-                        },3000);
+                		 location.href=data.url; 
                 	} 
+                	click=0;
                 },
                 error: function(xhr, type){
                 	$('.error_tip').text('服务器连接失败'); 
-                	 
+                	click=0;
                 }
             });
             return false;
