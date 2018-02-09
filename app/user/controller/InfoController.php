@@ -211,6 +211,7 @@ class InfoController extends UserBaseController
         }else{
             $paper['status_name']='已还款结束';
         }
+        
         $protocol=Db::name('guide')->where('name','borrower')->find();
         $paper['content']=$protocol['content'];
         $this->assign('info',$paper); 

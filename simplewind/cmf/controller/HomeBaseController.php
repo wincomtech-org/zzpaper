@@ -193,7 +193,10 @@ class HomeBaseController extends BaseController
     {
         $userId = cmf_get_current_user_id();
         if (empty($userId)) {
-            $this->error("用户尚未登录", url("user/login/index"));
+            //未登录直接跳转到首页
+            $this->redirect(url('portal/index/index'));
+            
+           // $this->error("用户尚未登录", url("user/login/index"));
         }
     }
 

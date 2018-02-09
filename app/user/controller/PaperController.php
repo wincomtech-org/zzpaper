@@ -320,8 +320,7 @@ class PaperController extends UserBaseController
     public function qrshow(){
         $id=$this->request->param('id',0,'intval');
         $url=url('user/paper/confirm',['id'=>$id],true,true);
-        $url_img=url('user/public/qrcode',['url'=>$url]);
-        $this->assign('url_img',$url_img);
+        
         $this->assign('url',$url);
         $this->assign('html_title','借条链接');
         return $this->fetch();
