@@ -196,14 +196,14 @@
                 dataType: 'json',
                 data:{'id':id,'psw':psw,'op':op},
                 success: function(data){
-                	$('.error_tip').text(data.msg);
+                	$('.error-tip').text(data.msg);
                 	if(data.url!=''){
                 		 location.href=data.url; 
                 	} 
                 	click=0;
                 },
-                error: function(xhr, type){
-                	$('.error_tip').text('服务器连接失败'); 
+                error: function(){
+                	$('.error-tip').text('服务器连接失败'); 
                 	click=0;
                 }
             });
