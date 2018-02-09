@@ -23,7 +23,7 @@ html,body{overflow-x:hidden;}
     -webkit-tap-highlight-color:transparent;
     -moz-tap-highlight-color: transparent;
 }
-
+img{transform:scale(1) translateZ(0)}
 /*颜色**/
 .btn-red{
     background-color:#d00000;
@@ -122,9 +122,8 @@ html,body{overflow-x:hidden;}
     box-sizing:border-box;
 }
 .error-tip{
-    transition:all .8s ease-in-out;
+  transition:all .8s ease-in-out;
 }
-
 /* 圆角 */
 .border-radius-10{
     -webkit-border-radius:10px;
