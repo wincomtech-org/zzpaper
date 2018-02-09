@@ -54,7 +54,7 @@
                         	（{$reply_status[$vo.status]}
                         	<if condition="$vo.status==0 && $vo.is_overtime==1">
                         	|已过期
-                        	<elseif condition="$vo.is_overtime==0 && $paper.back==$vo.is_borrower"> 
+                        	<elseif condition="$vo.status==0 && $vo.is_overtime==0 && $paper.back==$vo.is_borrower"> 
                         		<a href="{:url('user/paper/confirm',['id'=>$vo.id])}">|去确认</a>
                         	</if>
                         	 
