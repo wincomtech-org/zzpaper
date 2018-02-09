@@ -306,7 +306,7 @@ class PaperController extends UserBaseController
         Db::startTrans();
         try {
             $m_paper->insert($data);
-            $rid=Db::name('reply')->insert($data_reply);
+            $rid=Db::name('reply')->insertGetId($data_reply);
         } catch (\Exception $e) {
             Db::rollBack();
             $this->error('补借条失败，请重试!'.$e->getMessage());
