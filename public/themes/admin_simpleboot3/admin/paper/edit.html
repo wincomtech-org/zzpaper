@@ -16,7 +16,7 @@
 				<div class="col-md-6 col-sm-10">
 					<input type="text" class="form-control"  value="{$info.borrower_name}"
 						readonly /> 
-						<a href="{:url('AdminIndex/info',['id'=>$info.borrower_id])}">查看个人资料</a>
+						<a href="{:url('user/AdminIndex/info',['id'=>$info.borrower_id])}">查看个人资料</a>
 				</div>
 			</div>
 			<div class="form-group fleft">
@@ -39,7 +39,7 @@
 				<label class="col-sm-2 control-label">出借人</label>
 				<div class="col-md-6 col-sm-10">
 					<input type="text" class="form-control"  value="{$info.lender_name}" readonly />
-					<a href="{:url('AdminIndex/info',['id'=>$info.lender_id])}">查看个人资料</a>
+					<a href="{:url('user/AdminIndex/info',['id'=>$info.lender_id])}">查看个人资料</a>
 				</div>
 			</div>
 			<div class="form-group fleft">
@@ -111,6 +111,12 @@
 				<label class="col-sm-2 control-label">借款金额</label>
 				<div class="col-md-6 col-sm-10">
 					<input type="text" class="form-control"  value="￥{$info.money}" readonly /> 
+				</div>
+			</div>
+			<div class="form-group fleft">
+				<label class="col-sm-2 control-label">借款利率</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control"  value="{$info.rate}%" readonly /> 
 				</div>
 			</div>
 			<div class="form-group fleft">

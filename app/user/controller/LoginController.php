@@ -162,6 +162,9 @@ class LoginController extends HomeBaseController
                 case 3:
                     $this->error('账号被禁止访问');
                     break;
+                case 4:
+                    $this->error('密码连续错误六次，请明天再登录');
+                    break;
                 default :
                     $this->error('未受理的请求');
             }

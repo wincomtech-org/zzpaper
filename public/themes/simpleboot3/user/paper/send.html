@@ -41,7 +41,8 @@
                 </li>
                 <p class='tip box-p'>风险提示</p>
                 <p class=' red'>此平台只提供凭证，生成借条时请仔细核对信息在确认。</p>
-                <p class='error-tip red'>{$error}</p>
+              
+                 <p>&nbsp;&nbsp;<span class="error-tip red">{$error}</span></p>
             </ul>
             
             <div class="btn-red  btn-big">
@@ -53,7 +54,7 @@
 
         <!-- 年利率，借款用途点击出现的下拉框 -->
         <div class="drop_down drop_down1" style="display:none;">
-            <p class='drop_down_head'>年利率-利率暂时为10<a class='confirm-btn red'>确定</a></p>
+            <p class='drop_down_head'>年利率<a class='confirm-btn red'>确定</a></p>
             <div class="drop_down_list">
                 <p class='fixed_li'>0%</p>
                 <ul>
@@ -145,12 +146,7 @@
          function formloan(form){
          	 var money=$.trim($('input[name="borrowing_balance"]').val());
          	 var idcard=$.trim($('input[name="identity_num"]').val());
-         	 var send_type=$.trim($('input[name="send_type"]').val());
-         	 var rate=$.trim($('input[name="annual_rate"]').val().split('%')[0]);
-         	 var use=$.trim($('input[name="usage_loan"]').val());
          	 
-         	 var end=$.trim($('input[name="repayment_date"]').val());
-         
              if(money=='' || isMoney(money) == false){
                  $('.error-tip').text('提示：请输入正确金额');
                  $('input[name="borrowing_balance"]').focus();
@@ -164,14 +160,13 @@
                  return false;
              }
              $('.pop_up .promit-html').text('你确定要发起借条吗？');
-             $('.error-tip').text(''); 
-             $('.pop_up').show();
-             
+             $('.error-tip').text(); 
+             $('.pop_up').show(); 
              return false;
          }
          // 输入密码，确定
          $('.sure-btn-2').click(function(){
-         	$('.error-tip').text(''); 
+         	 
          	 var money=$.trim($('input[name="borrowing_balance"]').val());
          	 var idcard=$.trim($('input[name="identity_num"]').val());
          	 var send_type=$.trim($('input[name="send_type"]').val());
@@ -179,12 +174,12 @@
          	 var use=$.trim($('input[name="usage_loan"]').val());
          	 var end=$.trim($('input[name="repayment_date"]').val());
              var psw=$.trim($('.promit-input').val());
-            
- 
-            return false;
-             if(psw==''){
-             	return false;
-             }
+             
+            if( psw== '' || isPassword(psw) == false){ 
+                $('.promit-input').focus(); 
+                $('.pop_up .error-tip').text('请输入6位数字密码'); 
+                return false;
+            }
              $('.pop_up').hide();
              //ajax提交
              $.ajax({
