@@ -2,14 +2,29 @@
 </head>
 <body>
      <!-- 个人中心 -->
-     <div class="hasNav">
-     
-         <p>发送链接<a href="{$url}">{$url}</a>给付款人</p>
-         <p>或</p>
-         <p>让对方扫描下方二维码</p>
-         <img src="{$url_img}" alt="扫描二维码" />
-     {$url_img}
-     </div>
+     <!-- <div class="hasNav"> -->
+        <div class="erweima">
+            <p class='erweima_tit'>方式一</p>
+            <div>
+                <p class='tip'>复制下面链接，发送给对方</p><a href="{$url}">{$url}</a>
+            </div>
+        </div>
+        <div class="erweima">
+            <p class='erweima_tit'>方式二</p>
+            <div>
+                <p class='tip'>点击微信右上角菜单，分享给好友</p>
+            </div>
+        </div>
+        <div class="erweima">
+            <p class='erweima_tit'>方式三</p>
+            <div class='img'>
+                <p>让对方扫一扫二维码</p>
+                <img src="{$url_img}" alt="扫描二维码" />
+            </div>
+        </div>
+
+
+     <!-- </div> -->
   <include file="public@user_foot"  /> 
     
  
