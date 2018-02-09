@@ -321,11 +321,11 @@ class PaperController extends UserBaseController
         $id=$this->request->param('id',0,'intval');
         $reply=Db::name('reply')->where('id',$id)->find();
         if(empty($reply)){
-            $this->error('信息已失效!');
+            $this->error('申请信息已失效!');
         }
         $paper=Db::name('paper')->where('oid',$reply['oid'])->find();
         if(empty($paper)){
-            $this->error('信息已失效!');
+            $this->error('借条信息已失效!');
         }
         //判断是否显示同意
         $user=session('user');
