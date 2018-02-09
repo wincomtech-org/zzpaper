@@ -893,17 +893,6 @@ search_con_ul_div dl{
     padding:1rem .7rem;
 }
 
-@media screen and (max-width:375px) and (min-width:350px) {
-    .loan_mess {
-        padding: 3rem 1.2rem 1rem
-    }
-}
-
-@media screen and (max-width:414px) and (min-width:376px) {
-    .loan_mess {
-        padding: 3rem 1.9rem 1rem
-    }
-}
 
 /* 二维码 */
 .erweima p{
@@ -938,4 +927,18 @@ search_con_ul_div dl{
     width:160px;
     height:160px;
     margin-top:8px;
+}
+
+
+@media screen and (max-width:375px) and (min-width:350px) {
+    .loan_mess {
+        padding: 3rem 1.2rem 1rem
+    }
+}
+
+@media screen and (max-width:414px) and (min-width:376px) {
+    .loan_mess {
+        padding: 3rem 1.9rem 1rem
+    }
+    .erweima p{font-size:16px;}
 }
