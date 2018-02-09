@@ -290,7 +290,7 @@ class PaperController extends UserBaseController
                 'update_time'=>$time,
                 'type'=>'send',
                 'is_borrower'=>0,
-                'oid'=>$today.'-'.$user1['id'].'-'.($count+1),
+                'oid'=>$today.'-'.$user0['id'].'-'.($count+1),
             ];
             $data['borrower_id']=$user1['id'];
             $data['borrower_name']=$user1['user_nickname'];
@@ -319,11 +319,28 @@ class PaperController extends UserBaseController
     /* 中间页面，显示补借条后的二维码 */
     public function qrshow(){
         $id=$this->request->param('id',0,'intval');
-        $url=url('user/paper/confirm',['id'=>$id],true,true);
+        $reply=Db::name('reply')->where('id',$id)->find();
+        if(empty($reply)){
+            $this->error('信息已失效!');
+        }
+        $paper=Db::name('paper')->where('oid',$reply['oid'])->find();
+        if(empty($paper)){
+            $this->error('信息已失效!');
+        }
+        //判断是否显示同意
+        $user=session('user');
         
-        $this->assign('url',$url);
-        $this->assign('html_title','借条链接');
-        return $this->fetch();
+        $send_type=0;
+       //比较是否是借条发起者,发起者显示链接，其他人进入申请详情页
+        if(($reply['is_borrower']==1 && $paper['borrower_id']==$user['id']) || ($reply['is_borrower']==0 && $paper['lender_id']==$user['id'])){
+            $url=url('user/paper/qrshow',['id'=>$id],true,true);
+            $this->assign('url',$url);
+            $this->assign('html_title','借条链接');
+            return $this->fetch();
+        }else{
+            $this->redirect(url('user/paper/confirm',['id'=>$id]));
+        }
+        
     }
     /* 申请详情 */
     public function confirm(){
