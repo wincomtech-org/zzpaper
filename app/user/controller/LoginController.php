@@ -29,11 +29,13 @@ class LoginController extends HomeBaseController
             $redirect = base64_decode($redirect);
         }
         session('login_http_referer', $redirect);
-        if (cmf_is_user_login()) { //已经登录时直接跳到首页
-            return redirect($this->request->root() . '/');
+        //
+        
+         if (cmf_is_user_login()) { //已经登录时直接跳到首页
+             $this->redirect(url('user/index/index'));
         } else {
-            $this->redirect(url('login'));
-        }
+            $this->redirect(url('portal/index/index'));
+        } 
     }
     /**
      * 登录

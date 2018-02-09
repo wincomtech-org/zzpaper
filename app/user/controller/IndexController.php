@@ -21,6 +21,7 @@ class IndexController extends UserBaseController
         parent::_initialize();
         
     }
+     
     /**
      * 前台用户首页 ,待确认申请
      */
