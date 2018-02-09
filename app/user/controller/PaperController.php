@@ -389,14 +389,16 @@ class PaperController extends UserBaseController
         }
         //判断密码 
         $uid=session('user.id'); 
-        
+       
         $m_user=Db::name('user');
         $user=$m_user->where('id',$uid)->find();
         $result=zz_psw($user, $data['psw']);
         if(empty($result[0])){
             $this->error($result[1],$result[2]);
         }
-        if($info_reply['is_borrower']==1 && $info_paper['lender_name']==$user['nickname']){
+       //判断是借款人发起，还是出借人发起
+        if($info_reply['is_borrower']==1 && $info_paper['lender_name']==$user['user_nickname']){
+           
             //处理人是出借人
             $user1=$m_user->where('id',$info_paper['borrower_id'])->find();
             $user2=$user;
@@ -405,7 +407,8 @@ class PaperController extends UserBaseController
                 'lender_id'=>$user['id'],
                 'lender_id'=>$user['user_login'],
             ];
-        }elseif($info_reply['is_borrower']==0 && $info_paper['borrower_name']==$user['nickname']){
+        }elseif($info_reply['is_borrower']==0 && $info_paper['borrower_name']==$user['user_nickname']){
+            
             $user2=$m_user->where('id',$info_paper['lender_id'])->find();
             $user1=$user; 
             $data_paper=[
@@ -431,18 +434,20 @@ class PaperController extends UserBaseController
             
             switch($info_reply['type']){
                 case 'send':
-                    
+                   
                     //预期天数归0，计算到期天数
                     $data_paper['overdue_day']=0;
                     $data_paper['expire_day']=bcdiv(($info_paper['end_time']-strtotime(date('Y-m-d'))),86400,0);
-                    if($data['expire_day']>=1){
+                   
+                    if($data_paper['expire_day']>=1){
+                        
                         $data_paper['status']=4;
-                    }elseif($data['expire_day']==0){
+                    }elseif($data_paper['expire_day']==0){
                         $data_paper['status']=3;
                     }else{
                         $this->error('借条信息错误',url('user/index/index'));
                     }
-                     
+                   
                     break;
                 case 'delay':
                     
@@ -452,7 +457,7 @@ class PaperController extends UserBaseController
                     //预期天数归0，计算到期天数
                     $data_paper['overdue_day']=0;
                     $data_paper['expire_day']=bcdiv(($data_paper['end_time']-strtotime(date('Y-m-d'))),86400,0);
-                    if($data['expire_day']>=1){
+                    if($data_paper['expire_day']>=1){
                         $data_paper['status']=4; 
                     }elseif($data['expire_day']==0){
                         $data_paper['status']=3; 
@@ -473,6 +478,7 @@ class PaperController extends UserBaseController
             }
                  
         }
+       
         Db::startTrans();
         try {
             //更新申请
