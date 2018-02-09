@@ -121,6 +121,9 @@ html,body{overflow-x:hidden;}
     -o-box-sizing:border-box;
     box-sizing:border-box;
 }
+.error-tip{
+    transition:all .8s ease-in-out;
+}
 
 /* 圆角 */
 .border-radius-10{
