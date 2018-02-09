@@ -406,6 +406,7 @@ class PaperController extends UserBaseController
                 'update_time'=>time(),
                 'lender_id'=>$user['id'],
                 'lender_idcard'=>$user['user_login'],
+                'lender_mobile'=>$user['mobile'],
             ];
         }elseif($info_reply['is_borrower']==0 && $info_paper['borrower_name']==$user['user_nickname']){
             
@@ -415,6 +416,7 @@ class PaperController extends UserBaseController
                 'update_time'=>time(),
                 'borrower_id'=>$user['id'],
                 'borrower_idcard'=>$user['user_login'],
+                'borrower_mobile'=>$user['mobile'],
             ];
         }else{
             $this->error('无权操作此该借条');
