@@ -57,12 +57,12 @@
         
         <include file="public@psw" />   
     </section>
-    
+
     <!-- 年利率，借款用途点击出现的下拉框 -->
     <div class="drop_down drop_down1" style="display:none;">
-        <p class='drop_down_head'>年利率<a class='confirm-btn red'>确定</a></p>
+        <p class='drop_down_head'>年利率--<span class='fixed_li'>0%</span> <a class='confirm-btn red'>确定</a></p>
         <div class="drop_down_list">
-            <p class='fixed_li'>0%</p>
+            <!-- <p class='fixed_li'>0%</p> -->
             <ul>
             <foreach name="$Think.config.rate" item="vo">
                 <li>{$vo}%</li> 
@@ -72,9 +72,9 @@
     </div>    
     <!-- 买车，借款用途点击出现的下拉框 -->
      <div class="drop_down drop_down2" style="display:none;">
-        <p class='drop_down_head'>借款用途 <a class='confirm-btn red'>确定</a></p>
+        <p class='drop_down_head'>借款用途--<span class='fixed_li'>房子</span> <a class='confirm-btn red'>确定</a></p>
         <div class="drop_down_list">
-            <p class='fixed_li'>借款用途</p>
+            <!-- <p class='fixed_li'>借款用途</p> -->
             <ul>
              <foreach name="$Think.config.use" item="vo">
                 <li>{$vo}</li> 
