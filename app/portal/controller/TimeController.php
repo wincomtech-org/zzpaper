@@ -33,7 +33,7 @@ class TimeController extends HomeBaseController
         }else{
             cmf_set_dynamic_config(['time_day'=>date('Y-m-d')]);
         }
-        
+        $ip=get_client_ip();
         set_time_limit(600);
         $db=config('database'); 
         $mysqli=new \mysqli($db['hostname'],$db['username'],$db['password'],$db['database'],$db['hostport']);
@@ -46,7 +46,7 @@ class TimeController extends HomeBaseController
         $data_action[]=[
             'aid'=>1,
             'time'=>time(),
-            'ip'=>get_client_ip(),
+            'ip'=>$ip,
             'type'=>'system',
             'action'=>'清空了登录失败次数'.$rows.'条',
         ];
@@ -62,7 +62,7 @@ class TimeController extends HomeBaseController
         $data_action[]=[
             'aid'=>1,
             'time'=>time(),
-            'ip'=>get_client_ip(),
+            'ip'=>$ip,
             'type'=>'system',
             'action'=>'删除了过期申请'.$rows.'条',
         ];
@@ -77,7 +77,7 @@ class TimeController extends HomeBaseController
         $data_action[]=[
             'aid'=>1,
             'time'=>time(),
-            'ip'=>get_client_ip(),
+            'ip'=>$ip,
             'type'=>'system',
             'action'=>'更新了过期申请'.$rows.'条',
         ];
@@ -95,7 +95,7 @@ class TimeController extends HomeBaseController
         $data_action[]=[
             'aid'=>1,
             'time'=>time(),
-            'ip'=>get_client_ip(),
+            'ip'=>$ip,
             'type'=>'system',
             'action'=>'删除了过期借条'.$rows.'条',
         ];
@@ -106,7 +106,7 @@ class TimeController extends HomeBaseController
         $data_action[]=[
             'aid'=>1,
             'time'=>time(),
-            'ip'=>get_client_ip(),
+            'ip'=>$ip,
             'type'=>'system',
             'action'=>'更新了借条逾期天数'.$rows.'条',
         ];
@@ -129,7 +129,7 @@ class TimeController extends HomeBaseController
         $data_action[]=[
             'aid'=>1,
             'time'=>time(),
-            'ip'=>get_client_ip(),
+            'ip'=>$ip,
             'type'=>'system',
             'action'=>'更新了用户逾期7天的次数和金额'.$rows.'条',
         ];
@@ -153,7 +153,7 @@ class TimeController extends HomeBaseController
         $data_action[]=[
             'aid'=>1,
             'time'=>time(),
-            'ip'=>get_client_ip(),
+            'ip'=>$ip,
             'type'=>'system',
             'action'=>'更新了用户逾期累计'.$rows.'条',
         ];
@@ -163,7 +163,7 @@ class TimeController extends HomeBaseController
         $data_action[]=[
             'aid'=>1,
             'time'=>time(),
-            'ip'=>get_client_ip(),
+            'ip'=>$ip,
             'type'=>'system',
             'action'=>'更新今日到期为逾期'.$rows.'条',
         ];
@@ -174,7 +174,7 @@ class TimeController extends HomeBaseController
         $data_action[]=[
             'aid'=>1,
             'time'=>time(),
-            'ip'=>get_client_ip(),
+            'ip'=>$ip,
             'type'=>'system',
             'action'=>'更新了还剩1天的借条今日到期'.$rows.'条',
         ];
@@ -186,7 +186,7 @@ class TimeController extends HomeBaseController
         $data_action[]=[
             'aid'=>1,
             'time'=>time(),
-            'ip'=>get_client_ip(),
+            'ip'=>$ip,
             'type'=>'system',
             'action'=>'更新了即将到期天数'.$rows.'条',
         ];
@@ -202,7 +202,7 @@ class TimeController extends HomeBaseController
         $data_action[]=[
             'aid'=>1,
             'time'=>time(),
-            'ip'=>get_client_ip(),
+            'ip'=>$ip,
             'type'=>'system',
             'action'=>'更新借条发起和借条不同意为过期'.$rows.'条',
         ];

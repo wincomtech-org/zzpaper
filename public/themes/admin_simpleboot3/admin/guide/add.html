@@ -25,7 +25,7 @@
 			<div class="form-group">
 	           <label class="col-sm-2 control-label">内容</label>
 	           <div class="col-md-6 col-sm-10"> 
-	              <script type="text/plain" id="content" name="content"></script>
+	             <textarea name="content" style="width:100%;" rows="10"></textarea> 
 	           </div>
 	       </div>
 	       
@@ -38,15 +38,6 @@
 		</form>
 	</div>
 	<script src="__STATIC__/js/admin.js"></script>
- <script type="text/javascript">
-    //编辑器路径定义
-    var editorURL = GV.WEB_ROOT;
-</script>
-<script type="text/javascript" src="__STATIC__/js/ueditor/ueditor.config.js"></script>
-<script type="text/javascript" src="__STATIC__/js/ueditor/ueditor.all.min.js"></script>
-<script type="text/javascript">
-    var editorcontent = new baidu.editor.ui.Editor();
-    editorcontent.render('content');
-</script>
+ 
 </body>
 </html>

@@ -94,7 +94,7 @@ class GuideController extends AdminBaseController
             $this->error('数据错误');
         }
        
-        //$data['content']=$_POST['content'];
+        $data['content']=empty($_POST['content'])?'':$_POST['content'];
         $data['time']=time();
         $row=$m->where('id', $data['id'])->update($data);
         if($row===1){
