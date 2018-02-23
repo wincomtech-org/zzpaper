@@ -66,9 +66,12 @@ class LogController extends AdminbaseController {
             $this->error('日志操作不能清空');
         }
         $path=($this->dir).$file;
+        $name=session('name');
        //写入文件为空字符即为删除
         if(file_put_contents($path,'')===0){
-             
+            zz_log($name.'已清空日志', $file);
+            zz_log($name.'已清空日志'.$file, 'log.log');
+           
             $this->success('该日志已清空');
         }else{
             $this->error('操作失败');

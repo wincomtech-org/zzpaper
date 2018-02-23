@@ -29,9 +29,15 @@
 						<td> 
 							<a href="{:url('download',array('id'=>$vo.file))}">下载</a>
 							&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp; 
+							<eq name="vo.file" value="log.log">
+								<span>日志操作记录不能清空</span>
+							<else/>
 							<a
 							class="js-ajax-delete" href="{:url('clear',array('id'=>$vo.file))}"
-							data-msg="确认清空吗？">清空</a></td>
+							data-msg="确认清空吗？">清空</a>
+							</eq>
+						</td>	 
+							
 
 					</tr>
 					</foreach>
