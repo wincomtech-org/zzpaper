@@ -47,6 +47,12 @@ class LoginController extends HomeBaseController
         
     }
 
+    public function findPass()
+    {
+        $this->assign('html_title','登录');
+       return $this->fetch();
+        
+    }
     /**
      * 登录验证提交
      */

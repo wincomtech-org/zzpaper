@@ -12,6 +12,9 @@ html,body{font-family:Microsoft YaHei,Segoe UI Light,Segoe UI,"微软雅黑",Tah
 
 textarea,input,button,select,img{border:none;outline:none;}
 input[type=button],input[type=submit],input[type=file],input[type=text],input[type=reset],button{cursor:pointer;-webkit-appearance:none;border-radius:0;-webkit-border-radius:0;-moz-border-radius:0;-ms-border-radius:0;}
+.rt{
+    float:right;
+}
 .clearfix:after{
     content:"";
     display:block;
@@ -123,6 +126,10 @@ img{transform:scale(1) translateZ(0)}
 }
 .error-tip{
   transition:all .8s ease-in-out;
+}
+.height-37{
+    height:37px;
+    line-height:37px;
 }
 /* 圆角 */
 .border-radius-10{

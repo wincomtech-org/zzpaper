@@ -2,15 +2,23 @@
 </head>
 <body>
     <section class='main'>
-        <form action="" id="zzlogin">
+        <form action="" id="zzFindPass">
             <ul class='box form-box'>
                 <li class="box-li padding-all">
                     <div class='box-tit'>手机号：</div>
                     <div class='box-con'><input type="text" name='tel' placeholder='请输入正确手机号' required></div>
                 </li>
-                <li class="box-li padding-all">
-                    <div class='box-tit'>密码：</div>
-                    <div class='box-con'><input type="password" name='password' placeholder='请输入6位数字密码' maxlength="6" required></div>
+                
+                <li class="box-li padding-all box-con-relative">
+                    <div class='box-tit'>短信验证码：</div>
+                    <div class='box-con '>
+                        <input type="text" name='sms' placeholder='请输入验证码' required>
+                        <div class="identifying">
+                           
+                           <a href="javascript:void(0);" class="btn-small btn-red">发送短信</a>  
+                           <a href="javascript:void(0);" class="btn-small backg-gray" style="display:none;">已发送<span id="sms_msg">60</span>s</a>    
+                        </div>
+                    </div>
                 </li>
                 <li class="box-li padding-all box-con-relative">
                     <div class='box-tit'>验证码：</div>
@@ -22,20 +30,19 @@
                         </div>
                     </div>
                 </li>
-               <p class=' height-37'><a href="" class='rt red'>找回密码？</a></p>
                 <p class='error-tip box-p red'></p>
             </ul>
             
             <div class="btn-red  btn-middle border-radius-10 ">
-                <button type="submit" onClick="return formLogin(this.form);"/>立即登录</button>
+                <button type="submit" onClick="return formFind(this.form);"/>提交</button>
             </div>
         </form>
     </section>
  <include file="public@foot" />
  <script>
-$('#zzlogin').submit(function(){
-	$('.error-tip').text('正在登录'); 
-	var password=$.trim($('input[name=password]').val()); 
+    
+    
+$('#zzFindPass').submit(function(){
 	var tel=$.trim($('input[name=tel]').val());
 	var verify=$.trim($('input[name=identifying_code]').val());
 	
@@ -43,7 +50,7 @@ $('#zzlogin').submit(function(){
  $.post("{:url('user/login/ajaxLogin')}",
 		 {'password':password,'captcha':verify,'tel':tel},
 		 function(data){
-			console.log(data); 
+			
 		  	 if(data.code==1){
 				//返回上一页并刷新
 				self.location="{:url('user/index/index')}";
