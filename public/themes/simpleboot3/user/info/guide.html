@@ -22,10 +22,11 @@
         if($(this).parents('li').hasClass('auto')){
            
             $(this).parents('li ').removeClass('auto');
+           
              $(this).siblings('.guide_con ').hide(600);
         }else{
             $('.auto').removeClass('auto');
-            $('.guide_con ').show(600);
+            $('.guide_con ').hide();
             $(this).parents('li ').addClass('auto');
             $(this).siblings('.guide_con ').show(600);
         }
