@@ -65,6 +65,30 @@ class RegisterController extends HomeBaseController
          
         $this->error($msg->reg($phone,rand(100000,999999)));
     }
+    /**
+     * 发送验证码，要验证图片验证码
+     */
+    public function sendmsg1()
+    {
+        $pic=$this->request->param('pic',0);
+        $phone=$this->request->param('tel',0);
+        $type=$this->request->param('type','reg');
+        if (!cmf_captcha_check($pic)) {
+            $this->error('图片验证码错误');
+        }
+        $tmp=Db::name('user')->where('mobile',$phone)->find();
+        if($type=='reg'){
+            if(!empty($tmp)){
+                $this->error('该手机号已被使用');
+            }
+        }elseif($type=='find'){
+            if(empty($tmp)){
+                $this->error('该手机号不存在');
+            }
+        } 
+        $msg=new Msg(); 
+        $this->error($msg->reg($phone,rand(100000,999999)));
+    }
     
     /**
      * 前台用户注册提交
@@ -128,10 +152,12 @@ class RegisterController extends HomeBaseController
             } else {
                //保存微信头像为本地
                 $wx=session('wx');
-                
+                //定义头像名,有微信头像就获取，没有就指定默认
+                $data['avatar']='avatar/'.$data['user_login'].'.jpg';
                 //$imgSrc='http://wx.qlogo.cn/mmopen/vi_32/NtItl7iciafpn9B8zHC4Zhy0hsvYCvibbSeTlQpkDH44Il4RRZ4kwQ36l1PZ2DkMiaU0xibD3OeJxOLS6IY8u1pNTrQ/132';
-                if(!empty($wx['headimgurl'])){
-                    $data['avatar']='avatar/'.$data['user_login'].'.jpg';
+                if(empty($wx['headimgurl'])){ 
+                    zz_set_image('self.jpg', $data['avatar'],100,100,6); 
+                }else{
                     $this->download($wx['headimgurl'],$data['avatar']);
                 }
                 //用户性别

@@ -10,7 +10,7 @@
                 <li class="box-li padding-all photo-li">
                     <div class="pic_photo">
                         <div id="photo">
-                               <img src="{:cmf_get_image_url('')}/{$user.avatar|default='self.jpg'}" alt="头像">
+                               <img src="{:cmf_get_image_url($user.avatar)}}" alt="头像">
                         </div>
                         <label for="img" class='label-img'>
                             <input type="file" name="avatar" value='上传头像' id='img' accept="image/*">

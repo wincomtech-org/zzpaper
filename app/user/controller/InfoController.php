@@ -220,7 +220,7 @@ class InfoController extends UserBaseController
         
     }
     
-    /* qq */
+    /*绑定信息*/
     public function bind(){
         $this->assign('html_title','绑定信息');
         return $this->fetch();
@@ -248,6 +248,29 @@ class InfoController extends UserBaseController
         session('user.qq',$data['qq']);
         $this->error('修改成功',url('user/info/index'));
     }
+    /* weixin */
+    public function weixin(){
+        $this->assign('html_title','修改微信号');
+        return $this->fetch();
+    }
+    
+    /* 修改weixin */
+    public function ajax_weixin(){
+        
+        $data=$this->request->param('');
+        
+        //判断密码
+        $uid=session('user.id');
+        $m_user=Db::name('user');
+        $user=$m_user->where('id',$uid)->find();
+        $result=zz_psw($user, $data['psw']);
+        if(empty($result[0])){
+            $this->error($result[1],$result[2]);
+        }
+        Db::name('user')->where('id',$uid)->update(['weixin'=>$data['weixin']]);
+        session('user.weixin',$data['weixin']);
+        $this->error('修改成功',url('user/info/index'));
+    }
     /* 头像 */
     public function avatar(){
         $this->assign('html_title','换头像');
@@ -269,8 +292,7 @@ class InfoController extends UserBaseController
             $destination=$path.'/'.$avatar;  
             if(move_uploaded_file($file['tmp_name'], $destination)){
                 $avatar=zz_set_image($avatar,$avatar,100,100,6);
-                if(is_file($path.$avatar)){
-                    session('user.avatar',$avatar);
+                if(is_file($path.$avatar)){ 
                     $this->success('上传成功',url('user/info/index'));
                 }else{
                     $this->error('头像修改失败');
@@ -282,11 +304,7 @@ class InfoController extends UserBaseController
             $this->error('文件传输失败');
         }
     }
-    /* weixin */
-    public function weixin(){
-        $this->assign('html_title','修改微信号');
-        return $this->fetch();
-    }
+     
     /* 实名认证 */
     public function name(){
         
@@ -346,8 +364,31 @@ class InfoController extends UserBaseController
         }
         $user=$m_user->where('id',$uid)->find();
         session('user',$user);
-        $this->error('认证成功',url('user/info/index'));
+        $this->success('认证成功',url('user/info/index'));
         
     }
-
+    /* 修改密码*/
+    public function psw(){
+        $this->assign('html_title','修改密码');
+        return $this->fetch();
+    }
+    /* 修改密码*/
+    public function ajax_psw(){
+        $data=$this->request->param('');
+        //判断密码
+        $uid=session('user.id');
+        $m_user=Db::name('user');
+        $user=$m_user->where('id',$uid)->find();
+        $result=zz_psw($user, $data['psw0']);
+        if(empty($result[0])){
+            $this->error($result[1],$result[2]);
+        }
+        //修改密码
+        if(preg_match(config('reg_psw'), $data['psw'])==1){
+            $m_user->where('id',$uid)->update(['user_pass'=>cmf_password($data['psw'])]);
+            $this->success('修改成功',url('user/info/index'));
+        }
+        $this->error('修改失败');
+        
+    }
 }
