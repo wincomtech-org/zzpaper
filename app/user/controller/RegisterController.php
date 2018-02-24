@@ -153,7 +153,7 @@ class RegisterController extends HomeBaseController
                //保存微信头像为本地
                 $wx=session('wx');
                 //定义头像名,有微信头像就获取，没有就指定默认
-                $data['avatar']='avatar/'.$data['user_login'].'.jpg';
+                $data['avatar']='avatar/'.md5($data['user_login']).'.jpg';
                 //$imgSrc='http://wx.qlogo.cn/mmopen/vi_32/NtItl7iciafpn9B8zHC4Zhy0hsvYCvibbSeTlQpkDH44Il4RRZ4kwQ36l1PZ2DkMiaU0xibD3OeJxOLS6IY8u1pNTrQ/132';
                 if(empty($wx['headimgurl'])){ 
                     zz_set_image('self.jpg', $data['avatar'],100,100,6); 

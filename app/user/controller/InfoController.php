@@ -278,20 +278,25 @@ class InfoController extends UserBaseController
     }
     /* 头像修改 */
     public function ajax_avatar(){
-        
-       
+         $users=Db::name('user')->where('user_type',2)->column('');
+       foreach($users as $v){
+           Db::name('user')->where('id',$v['id'])->update(['avatar'=>'avatar/'.md5($v['user_login']).'.jpg']);
+       } 
+        if(empty($_FILES['avatar1'])){
+            $this->error('请选择图片');
+        }
         $file=$_FILES['avatar1'];
-        
+       
         if($file['error']==0){
             if($file['size']>config('avatar_size')){
                 $this->error('文件超出大小限制');
             }
-            $avatar='avatar/'.session('user.user_login').'.jpg';
+            $avatar='avatar/'.md5(session('user.user_login')).'.jpg';
             $path=getcwd().'/upload/';
-            $avatar1=$avatar.'.jpg';
-            $destination=$path.$avatar1;
+           
+            $destination=$path.$avatar;
             if(move_uploaded_file($file['tmp_name'], $destination)){
-                $avatar=zz_set_image($avatar1,$avatar,100,100,6);
+                $avatar=zz_set_image($avatar,$avatar,100,100,6);
                 if(is_file($path.$avatar)){ 
                     $this->success('上传成功',url('user/info/index'));
                 }else{
