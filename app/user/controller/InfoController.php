@@ -288,10 +288,10 @@ class InfoController extends UserBaseController
             }
             $avatar='avatar/'.session('user.user_login').'.jpg';
             $path=getcwd().'/upload/';
-            
-            $destination=$path.$avatar.'.jpg';  
+            $avatar1=$avatar.'.jpg';
+            $destination=$path.$avatar1;
             if(move_uploaded_file($file['tmp_name'], $destination)){
-                $avatar=zz_set_image($avatar,$avatar,100,100,6);
+                $avatar=zz_set_image($avatar1,$avatar,100,100,6);
                 if(is_file($path.$avatar)){ 
                     $this->success('上传成功',url('user/info/index'));
                 }else{
