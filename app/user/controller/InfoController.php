@@ -289,7 +289,7 @@ class InfoController extends UserBaseController
             $avatar='avatar/'.session('user.user_login').'.jpg';
             $path=getcwd().'/upload/';
             
-            $destination=$path.'/'.$avatar;  
+            $destination=$path.$avatar.'.jpg';  
             if(move_uploaded_file($file['tmp_name'], $destination)){
                 $avatar=zz_set_image($avatar,$avatar,100,100,6);
                 if(is_file($path.$avatar)){ 
