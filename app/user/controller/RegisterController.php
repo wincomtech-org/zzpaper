@@ -52,14 +52,36 @@ class RegisterController extends HomeBaseController
         $phone=$this->request->param('tel',0);
         $type=$this->request->param('type','reg');
         $tmp=Db::name('user')->where('mobile',$phone)->find();
-        if($type=='reg'){ 
-            if(!empty($tmp)){
-                $this->error('该手机号已被使用');
-            }
-        }elseif($type=='find'){
-            if(empty($tmp)){
-                $this->error('该手机号不存在');
-            }
+        
+        switch ($type){
+            //注册
+            case 'reg':
+                if(!empty($tmp)){
+                    $this->error('该手机号已被使用');
+                }
+                break;
+            //找回密码
+            case 'find':
+                if(empty($tmp)){
+                    $this->error('该手机号不存在');
+                }
+                break;
+            //换手机号
+            case 'mobile':
+                if(!empty($tmp)){
+                    $this->error('该手机号已被使用');
+                }
+                //判断密码
+                $psw=$this->request->param('psw',0);
+                $user=Db::name('user')->where('id',session('user.id'))->find();
+                $result=zz_psw($user, $psw);
+                if(empty($result[0])){
+                    $this->error($result[1],$result[2]);
+                }
+                break;
+            default:
+                 $this->error('未知操作');
+                 
         }
         $msg=new Msg();
          

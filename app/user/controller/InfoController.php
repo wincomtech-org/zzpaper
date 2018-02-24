@@ -13,6 +13,7 @@ namespace app\user\controller;
 use cmf\controller\UserBaseController;
 use think\Db;
 use think\Validate;
+use sms\Msg;
 /* 个人中心 */
 class InfoController extends UserBaseController
 {
@@ -392,5 +393,64 @@ class InfoController extends UserBaseController
         }
         $this->error('修改失败');
         
+    }
+    /* 修改手机号*/
+    public function mobile(){
+        $this->assign('html_title','修改手机号');
+        return $this->fetch();
+    }
+    /* 修改手机号*/
+    public function ajax_mobile(){
+        $data=$this->request->param('');
+        $validate = new Validate([
+             
+            'code'  => 'require|number|length:6',
+            'tel' => 'require|number|length:11',
+            'psw' => 'require|number|length:6',
+        ]);
+        $validate->message([
+            'tel.require'           => '手机号码错误',
+            'tel.number'           => '手机号码错误',
+            'tel.length'           => '手机号码错误', 
+            'code.require'           => '短信验证码错误',
+            'code.number'           => '短信验证码错误',
+            'code.length'           => '短信验证码错误',
+            'psw.require' => '密码为6位数字',
+            'psw.number' => '密码为6位数字',
+            'psw.length' => '密码为6位数字', 
+        ]);
+        
+        $data = $this->request->post();
+        if (!$validate->check($data)) {
+            $this->error($validate->getError());
+        } 
+       
+        if (preg_match(config('reg_mobile'), $data['tel'])) {
+            $uid=session('user.id');
+            $m_user=Db::name('user');
+            //判断手机号
+            $tmp=$m_user->where('mobile',$data['tel'])->find();
+            if(!empty($tmp)){
+                $this->error("您的手机号已存在");
+            }
+            //判断密码
+            $user=$m_user->where('id',$uid)->find(); 
+            $result=zz_psw($user, $data['psw']);
+            if(empty($result[0])){
+                $this->error($result[1],$result[2]);
+            }
+            //短信验证码
+            $msg=new Msg();
+            $res=$msg->verify($data['tel'],$data['code']);
+            if($res!=='success'){
+                $this->error($res);
+            } 
+            $m_user->where('id',$uid)->update(['mobile'=>$data['tel']]);
+            session('user.mobile',$data['tel']);
+            $this->success('手机号更改成功',url('user/info/index'));
+        } else {
+            $this->error("您输入的手机号格式错误");
+        }
+         
     }
 }
