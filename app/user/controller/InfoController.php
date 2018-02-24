@@ -278,10 +278,7 @@ class InfoController extends UserBaseController
     }
     /* 头像修改 */
     public function ajax_avatar(){
-         $users=Db::name('user')->where('user_type',2)->column('');
-       foreach($users as $v){
-           Db::name('user')->where('id',$v['id'])->update(['avatar'=>'avatar/'.md5($v['user_login']).'.jpg']);
-       } 
+         
         if(empty($_FILES['avatar1'])){
             $this->error('请选择图片');
         }
