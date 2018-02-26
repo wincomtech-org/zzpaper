@@ -146,6 +146,7 @@ class InfoController extends UserBaseController
         if(empty($info_paper)){
             $this->error('该借条已完成或已废弃');
         }
+        $uid=session('user.id');
         switch ($data['type']){
             case 'delay':
                 if(preg_match('/^\d+$/', $data['day'])!=1){
@@ -159,6 +160,9 @@ class InfoController extends UserBaseController
                 }
                 break;
             case 'back':
+                if($uid!=$info_paper['borrower_id']){
+                    $this->error('非借款人，不能还款',url('user/info/index'));
+                }
                 $tmp=zz_get_money_overdue($info_paper['real_money'], $info_paper['money'], $info_paper['rate'], $info_paper['overdue_day']);
                 if($tmp!=$data['final_money']){
                     $this->error('还款信息错误',url('user/info/index'));
@@ -170,7 +174,7 @@ class InfoController extends UserBaseController
         
         
         //判断密码
-        $uid=session('user.id');
+       
         $m_user=Db::name('user');
         $user=$m_user->where('id',$uid)->find();
         $result=zz_psw($user, $data['psw']);

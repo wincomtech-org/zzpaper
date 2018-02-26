@@ -126,7 +126,7 @@
                     </li>
                     
                     <li class=''>
-                        <a href="javascript:void(0);" class='red back-alert'>
+                        <a href="javascript:void(0);" class='<eq name="paper.back" value="0">red back-alert</eq>'>
                             还款
                         </a>
                     </li>
@@ -176,7 +176,7 @@
         	}
             $('.error-tip').text('正在提交，请勿重复操作!');
            
-            var psw=$.trim($('.pop_up1 input[name="password"]').val());
+            var psw=$.trim($('.pop_up1 .promit-input').val());
            
     		 if(!isPassword(psw)){
     			 $('.error-tip').text('请输入6位数字密码');

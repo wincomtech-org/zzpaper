@@ -232,6 +232,7 @@ class PaperController extends UserBaseController
         
         //计算利息保存利率为百倍整数，所以360*100=36000
         $data['real_money']=zz_get_money($data['money'],$data['rate'],$data['expire_day']);
+        
         //判断姓名格式
         $names=explode('-',$data0['name']);
         $where_user11=['user_type'=>2,'user_nickname'=>$names[0]];
@@ -382,7 +383,7 @@ class PaperController extends UserBaseController
        
         $data=$this->request->param('');
         $m_reply=Db::name('reply');
-        $m_paper=Db::name('paper');
+        $m_paper=Db::name('paper'); 
         $where_reply=['id'=>$data['id'],'status'=>0,'is_overtime'=>0];
         $info_reply=$m_reply->where($where_reply)->find();
         if(empty($info_reply)){
@@ -481,8 +482,7 @@ class PaperController extends UserBaseController
                     //要删除paper，增加old,组装数据$info_paper
                     $info_paper['final_money']=$info_reply['final_money'];
                     $info_paper['update_time']=$data_reply['update_time'];
-                    unset($info_paper['id']);
-                    unset($info_paper['status']);
+                   
             }
                  
         }
@@ -499,6 +499,9 @@ class PaperController extends UserBaseController
             if($data['op']==1 ){
                 if($info_reply['type']=='back'){
                     $m_paper->where('id',$info_paper['id'])->delete();
+                    unset($info_paper['id']);
+                    unset($info_paper['status']);
+                    unset($info_paper['expire_day']);
                     Db::name('paper_old')->insert($info_paper);
                     //确认还款后更新用户信息
                     $data_user1=['back'=>bcsub($user1['back'],$info_paper['money'],2)];
