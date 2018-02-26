@@ -718,6 +718,7 @@ input[type='hidden']{
 .drop_down_list{
     position:relative;
     width:100%;
+    padding-top:30px;
 }
 .drop_down ul{
     max-height:100px;
@@ -726,14 +727,16 @@ input[type='hidden']{
    
 }
 .drop_down_list p.fixed_li{
-    position:absolute;
-    top:0;
-    left:0;
-    font-size:15px;
-    border-bottom:2px solid #fff;
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: 15px;
+    border-top: 1px solid #fff;
+    border-bottom: 2px solid #fff;
+    background-color: rgba(170,170,170,.8);
 }
 .drop_down_list li,.drop_down_list p{
-    background-color:#aaaaaa;
+    background-color:rgba(170,170,170,1);
     
     height:30px;
     line-height:30px;
