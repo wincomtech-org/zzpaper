@@ -4,7 +4,7 @@
     </div>
     <div class="person_herd_mess">
         <a href="{:url('user/index/index')}">
-            <img src="{:cmf_get_image_url('')}/{$user.avatar|default='self.jpg'}" alt="头像">
+            <img src="{:cmf_get_image_url($user.avatar)}" alt="头像">
             <span>{$user.user_nickname}</span>
         </a> 
     </div>

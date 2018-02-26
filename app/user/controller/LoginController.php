@@ -13,7 +13,7 @@ namespace app\user\controller;
 use think\Validate;
 use cmf\controller\HomeBaseController;
 use app\user\model\UserModel;
-
+use sms\Msg;
 class LoginController extends HomeBaseController
 {
 
@@ -47,12 +47,6 @@ class LoginController extends HomeBaseController
         
     }
 
-    public function findPass()
-    {
-        $this->assign('html_title','登录');
-       return $this->fetch();
-        
-    }
     /**
      * 登录验证提交
      */
@@ -178,78 +172,81 @@ class LoginController extends HomeBaseController
             }
          
     }
-    
-
     /**
      * 找回密码
      */
-    public function findPassword()
+    public function findPass()
     {
-        return $this->fetch('/find_password');
+        $this->assign('html_title','找回密码');
+        return $this->fetch();
+        
     }
-
     /**
-     * 用户密码重置
+     * 重置密码
      */
-    public function passwordReset()
+    public function ajax_findpsw()
     {
-
-        if ($this->request->isPost()) {
-            $validate = new Validate([
-                'captcha'           => 'require',
-                'verification_code' => 'require',
-                'password'          => 'require|min:6|max:32',
-            ]);
-            $validate->message([
-                'verification_code.require' => '验证码不能为空',
-                'password.require'          => '密码不能为空',
-                'password.max'              => '密码不能超过32个字符',
-                'password.min'              => '密码不能小于6个字符',
-                'captcha.require'           => '验证码不能为空',
-            ]);
-
-            $data = $this->request->post();
-            if (!$validate->check($data)) {
-                $this->error($validate->getError());
-            }
-
-            if (!cmf_captcha_check($data['captcha'])) {
-                $this->error('验证码错误');
-            }
-            $errMsg = cmf_check_verification_code($data['username'], $data['verification_code']);
-            if (!empty($errMsg)) {
-                $this->error($errMsg);
-            }
-
-            $userModel = new UserModel();
-            if ($validate::is($data['username'], 'email')) {
-
-                $log = $userModel->emailPasswordReset($data['username'], $data['password']);
-
-            } else if (preg_match('/(^(13\d|15[^4\D]|17[013678]|18\d)\d{8})$/', $data['username'])) {
-                $user['mobile'] = $data['username'];
-                $log            = $userModel->mobilePasswordReset($data['username'], $data['password']);
-            } else {
-                $log = 2;
-            }
-            switch ($log) {
-                case 0:
-                    $this->success('密码重置成功', $this->request->root());
-                    break;
-                case 1:
-                    $this->error("您的账户尚未注册");
-                    break;
-                case 2:
-                    $this->error("您输入的账号格式错误");
-                    break;
-                default :
-                    $this->error('未受理的请求');
-            }
-
-        } else {
-            $this->error("请求错误");
+        //$data=$this->request->param('');
+        
+        $validate = new Validate([
+            
+            'pic'  => 'require|length:4',
+            'code'  => 'require|number|length:6',
+            'tel' => 'require|number|length:11',
+            'psw' => 'require|number|length:6',
+        ]);
+        $validate->message([
+            'tel.require'           => '手机号码错误',
+            'tel.number'           => '手机号码错误',
+            'tel.length'           => '手机号码错误',
+            'pic.require'           => '图片验证码错误',
+            'pic.length'           => '图片验证码错误',
+            'code.require'           => '短信验证码错误',
+            'code.number'           => '短信验证码错误',
+            'code.length'           => '短信验证码错误',
+            'psw.require' => '密码为6位数字', 
+            'psw.number' => '密码为6位数字', 
+            'psw.length' => '密码为6位数字', 
+           
+             
+        ]);
+        
+        $data = $this->request->post();
+        if (!$validate->check($data)) {
+            $this->error($validate->getError());
         }
+        if (!cmf_captcha_check($data['pic'])) {
+            $this->error('图片验证码错误');
+        }
+        $msg=new Msg();
+        $res=$msg->verify($data['tel'],$data['code']);
+        if($res!=='success'){
+            $this->error($res);
+        }
+         
+        $userModel = new UserModel();
+        if (preg_match(config('reg_mobile'), $data['tel'])) { 
+            $log            = $userModel->mobilePasswordReset($data['tel'], $data['psw']);
+        } else {
+            $log = 2;
+        }
+        switch ($log) {
+            case 0:
+                session('user',null);
+                $this->success('密码重置成功');
+                break;
+            case 1:
+                $this->error("您的手机号尚未注册");
+                break;
+            case 2:
+                $this->error("您输入的手机号格式错误");
+                break;
+            default :
+                $this->error('未受理的请求');
+        }
+        
+    
     }
-
+ 
 
 }

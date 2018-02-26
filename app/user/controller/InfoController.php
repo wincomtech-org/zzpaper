@@ -13,6 +13,7 @@ namespace app\user\controller;
 use cmf\controller\UserBaseController;
 use think\Db;
 use think\Validate;
+use sms\Msg;
 /* 个人中心 */
 class InfoController extends UserBaseController
 {
@@ -220,7 +221,7 @@ class InfoController extends UserBaseController
         
     }
     
-    /* qq */
+    /*绑定信息*/
     public function bind(){
         $this->assign('html_title','绑定信息');
         return $this->fetch();
@@ -248,6 +249,29 @@ class InfoController extends UserBaseController
         session('user.qq',$data['qq']);
         $this->error('修改成功',url('user/info/index'));
     }
+    /* weixin */
+    public function weixin(){
+        $this->assign('html_title','修改微信号');
+        return $this->fetch();
+    }
+    
+    /* 修改weixin */
+    public function ajax_weixin(){
+        
+        $data=$this->request->param('');
+        
+        //判断密码
+        $uid=session('user.id');
+        $m_user=Db::name('user');
+        $user=$m_user->where('id',$uid)->find();
+        $result=zz_psw($user, $data['psw']);
+        if(empty($result[0])){
+            $this->error($result[1],$result[2]);
+        }
+        Db::name('user')->where('id',$uid)->update(['weixin'=>$data['weixin']]);
+        session('user.weixin',$data['weixin']);
+        $this->error('修改成功',url('user/info/index'));
+    }
     /* 头像 */
     public function avatar(){
         $this->assign('html_title','换头像');
@@ -255,22 +279,23 @@ class InfoController extends UserBaseController
     }
     /* 头像修改 */
     public function ajax_avatar(){
-        
-       
+         
+        if(empty($_FILES['avatar1'])){
+            $this->error('请选择图片');
+        }
         $file=$_FILES['avatar1'];
-        
+       
         if($file['error']==0){
             if($file['size']>config('avatar_size')){
                 $this->error('文件超出大小限制');
             }
-            $avatar='avatar/'.session('user.user_login').'.jpg';
+            $avatar='avatar/'.md5(session('user.user_login')).'.jpg';
             $path=getcwd().'/upload/';
-            
-            $destination=$path.'/'.$avatar;  
+           
+            $destination=$path.$avatar;
             if(move_uploaded_file($file['tmp_name'], $destination)){
                 $avatar=zz_set_image($avatar,$avatar,100,100,6);
-                if(is_file($path.$avatar)){
-                    session('user.avatar',$avatar);
+                if(is_file($path.$avatar)){ 
                     $this->success('上传成功',url('user/info/index'));
                 }else{
                     $this->error('头像修改失败');
@@ -282,11 +307,7 @@ class InfoController extends UserBaseController
             $this->error('文件传输失败');
         }
     }
-    /* weixin */
-    public function weixin(){
-        $this->assign('html_title','修改微信号');
-        return $this->fetch();
-    }
+     
     /* 实名认证 */
     public function name(){
         
@@ -346,8 +367,90 @@ class InfoController extends UserBaseController
         }
         $user=$m_user->where('id',$uid)->find();
         session('user',$user);
-        $this->error('认证成功',url('user/info/index'));
+        $this->success('认证成功',url('user/info/index'));
         
     }
-
+    /* 修改密码*/
+    public function psw(){
+        $this->assign('html_title','修改密码');
+        return $this->fetch();
+    }
+    /* 修改密码*/
+    public function ajax_psw(){
+        $data=$this->request->param('');
+        //判断密码
+        $uid=session('user.id');
+        $m_user=Db::name('user');
+        $user=$m_user->where('id',$uid)->find();
+        $result=zz_psw($user, $data['psw0']);
+        if(empty($result[0])){
+            $this->error($result[1],$result[2]);
+        }
+        //修改密码
+        if(preg_match(config('reg_psw'), $data['psw'])==1){
+            $m_user->where('id',$uid)->update(['user_pass'=>cmf_password($data['psw'])]);
+            $this->success('修改成功',url('user/info/index'));
+        }
+        $this->error('修改失败');
+        
+    }
+    /* 修改手机号*/
+    public function mobile(){
+        $this->assign('html_title','修改手机号');
+        return $this->fetch();
+    }
+    /* 修改手机号*/
+    public function ajax_mobile(){
+        $data=$this->request->param('');
+        $validate = new Validate([
+             
+            'code'  => 'require|number|length:6',
+            'tel' => 'require|number|length:11',
+            'psw' => 'require|number|length:6',
+        ]);
+        $validate->message([
+            'tel.require'           => '手机号码错误',
+            'tel.number'           => '手机号码错误',
+            'tel.length'           => '手机号码错误', 
+            'code.require'           => '短信验证码错误',
+            'code.number'           => '短信验证码错误',
+            'code.length'           => '短信验证码错误',
+            'psw.require' => '密码为6位数字',
+            'psw.number' => '密码为6位数字',
+            'psw.length' => '密码为6位数字', 
+        ]);
+        
+        $data = $this->request->post();
+        if (!$validate->check($data)) {
+            $this->error($validate->getError());
+        } 
+       
+        if (preg_match(config('reg_mobile'), $data['tel'])) {
+            $uid=session('user.id');
+            $m_user=Db::name('user');
+            //判断手机号
+            $tmp=$m_user->where('mobile',$data['tel'])->find();
+            if(!empty($tmp)){
+                $this->error("您的手机号已存在");
+            }
+            //判断密码
+            $user=$m_user->where('id',$uid)->find(); 
+            $result=zz_psw($user, $data['psw']);
+            if(empty($result[0])){
+                $this->error($result[1],$result[2]);
+            }
+            //短信验证码
+            $msg=new Msg();
+            $res=$msg->verify($data['tel'],$data['code']);
+            if($res!=='success'){
+                $this->error($res);
+            } 
+            $m_user->where('id',$uid)->update(['mobile'=>$data['tel']]);
+            session('user.mobile',$data['tel']);
+            $this->success('手机号更改成功',url('user/info/index'));
+        } else {
+            $this->error("您输入的手机号格式错误");
+        }
+         
+    }
 }
