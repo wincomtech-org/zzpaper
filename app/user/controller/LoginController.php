@@ -152,7 +152,9 @@ class LoginController extends HomeBaseController
             $session_login_http_referer = session('login_http_referer');
              switch ($log) {
                 case 0:
-                    cmf_user_action('login');
+                    //用户操作记录，用于计算在线积分等
+                    //cmf_user_action('login');
+                    session('psw',0);
                     $this->success('登录成功');
                     break;
                 case 1:

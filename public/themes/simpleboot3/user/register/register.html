@@ -14,11 +14,11 @@
                 </li>
                 <li class="box-li padding-all">
                     <div class='box-tit'>设置密码：</div>
-                    <div class='box-con'><input type="password" name='password' placeholder='请输入6位数密码' maxlength="6" required></div>
+                    <div class='box-con'><input type="text" name='password' placeholder='请输入6位数字密码' maxlength="6" required></div>
                 </li>
                 <li class="box-li padding-all">
                     <div class='box-tit'>确认密码</div>
-                    <div class='box-con'><input type="text" name='password_repeat' placeholder='请再次填写6位数字密码' required></div>
+                    <div class='box-con'><input type="text" name='password_repeat' placeholder='请再次填写密码' maxlength="6" required></div>
                 </li>
                 <li class="box-li padding-all">
                     <div class='box-tit'>微信号：</div>
@@ -84,8 +84,7 @@ function send_msg(tel){
         	$('.error-tip').text('服务器连接失败'); 
         }
     });
-	return false;
-	
+	return false; 
 }
 
 $('#custorm_dates').submit(function(){ 

@@ -62,7 +62,7 @@
     <div class="drop_down drop_down1" style="display:none;">
         <p class='drop_down_head'>年利率<a class='confirm-btn red'>确定</a></p>
         <div class="drop_down_list">
-            <p class='fixed_li'>0%</p>
+            <p class='fixed_li'></p>
             <ul>
             <foreach name="$Think.config.rate" item="vo">
                 <li>{$vo}%</li> 
@@ -74,7 +74,7 @@
      <div class="drop_down drop_down2" style="display:none;">
         <p class='drop_down_head'>借款用途<a class='confirm-btn red'>确定</a></p>
         <div class="drop_down_list">
-            <p class='fixed_li'>买房</p>
+            <p class='fixed_li'></p>
             <ul>
              <foreach name="$Think.config.use" item="vo">
                 <li>{$vo}</li> 
@@ -89,6 +89,12 @@
     <script type="text/javascript" src="__TMPL__/public/assets/js/laydate/laydate.js"></script>
  
     <script>
+    //借款用户和利率初始化
+    var rate1=$('.drop_down1 ul li').eq(0).text();
+    console.log(rate1);
+    var use1=$('.drop_down2 ul li').eq(0).text();
+    $('.drop_down1 .fixed_li').text(rate1);
+    $('.drop_down2 .fixed_li').text(use1);
  // 日期
  	var click=0;
  		//获取当前时间，格式YYYY-MM-DD
@@ -184,7 +190,7 @@
                 $('.pop_up .error-tip').text('请输入6位数字密码'); 
                 return false;
             }
-             $('.pop_up').hide();
+            psw_hide();
              if(click==0){
         		 	click=1;
  	       	 }else{

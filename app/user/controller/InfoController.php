@@ -30,6 +30,8 @@ class InfoController extends UserBaseController
     {
         
        $this->assign('html_title','个人中心'); 
+       $user=Db::name('user')->where('id',session('user.id'))->find();
+       session('user',$user);
        return $this->fetch();
 
     }

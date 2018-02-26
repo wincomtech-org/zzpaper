@@ -39,6 +39,7 @@ $('#zzlogin').submit(function(){
 	var tel=$.trim($('input[name=tel]').val());
 	var verify=$.trim($('input[name=identifying_code]').val());
 	
+   
  $.post("{:url('user/login/ajaxLogin')}",
 		 {'password':password,'captcha':verify,'tel':tel},
 		 function(data){

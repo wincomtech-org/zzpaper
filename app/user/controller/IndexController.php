@@ -28,7 +28,8 @@ class IndexController extends UserBaseController
     public function index()
     {
         $uid=session('user.id');
-        
+        $user=Db::name('user')->where('id',$uid)->find();
+        session('user',$user);
        $list_reply=Db::name('reply')
        ->alias('r')
        ->field('r.*,p.money as p_money,p.rate as p_rate')

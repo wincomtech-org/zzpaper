@@ -15,7 +15,7 @@ Route::any('plugin/[:_plugin]/[:_controller]/[:_action]', "\\cmf\\controller\\Pl
 Route::get('captcha/new', "\\cmf\\controller\\CaptchaController@index");
 
 /* 记录日志 */
-function zz_log($str,$filename){
+function zz_log($str,$filename='test.log'){
     error_log(date('Y-m-d H:i:s').$str."\r\n",3,'log/'.$filename);
 }
 /* 根据当前时间得到今天凌晨的时间 */
@@ -42,17 +42,18 @@ function zz_psw($user,$psw){
         return [0,'密码已修改，请重新登录',url('user/login/login')];
     }  
     if(cmf_compare_password($psw, $user['user_pass'])){
-        session('user',$user); 
+        session('psw',0); 
         return [1];
     }else{
-        $fail=session('user.psw');
+        $fail=session('psw');
         if(empty($fail)){
-            session('user.psw',1);
+            session('psw',1);
         }elseif($fail==2){
             session('user',null);
-            return [0,'密码错误已达3此，请重新登录',url('user/login/login')];
+            session('psw',0);
+            return [0,'密码错误已达3次，请重新登录',url('user/login/login')];
         }else{
-            session('user.psw',$fail+1);
+            session('psw',$fail+1);
         }
         return [0,'密码错误'.($fail+1).',累计三次将退出登录!',''];
     }
@@ -102,7 +103,7 @@ function zz_set_image($pic,$pic_new,$width,$height,$thump=6){
         if($size!=[$width,$height] || !is_file($imgSrc1)){ 
             $image->thumb($width, $height,$thump)->save($imgSrc1);
         } 
-    }
+    } 
     return $pic_new; 
 }
  

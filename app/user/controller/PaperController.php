@@ -232,16 +232,28 @@ class PaperController extends UserBaseController
         
         //计算利息保存利率为百倍整数，所以360*100=36000
         $data['real_money']=zz_get_money($data['money'],$data['rate'],$data['expire_day']);
-        
-        //获取对方信息
-        $user11=Db::name('user')->where('user_nickname',$data0['name'])->find();
-        if(empty($user11)){
+        //判断姓名格式
+        $names=explode('-',$data0['name']);
+        $where_user11=['user_type'=>2,'user_nickname'=>$names[0]];
+        if(!empty($names[1])){
+            if(preg_match(config('reg_mobile'),$names[1])!=1){
+                $this->error('手机号输入有误');
+            }
+            $where_user11['mobile']=$names[1];
+        } 
+        //获取对方信息 
+        $user11=Db::name('user')->where($where_user11)->select();
+        if(empty($user11[0])){
             $this->error('对方姓名不存在');
         }
-        if(empty($user11['is_name'])){
+        if(!empty($user11[1])){
+            $this->error('姓名有重复，请在姓名后加上手机号，用-分隔，如张三-15211112222');
+        }  
+        $user1=$user11[0];
+        if(empty($user1['is_name'])){
             $this->error('对方未实名认证，不能补借条');
         }
-        if($user11['id']==$user0['id']){
+        if($user1['id']==$user0['id']){
             $this->error('不能借给自己');
         }
         
@@ -251,18 +263,12 @@ class PaperController extends UserBaseController
             $this->error($result[1],$result[2]);
         }
         $m_paper=Db::name('paper');
-        //对方信息暂不保存
-        $user1=[
-            'id'=>0,
-            'user_nickname'=>$user11['user_nickname'],
-            'user_login'=>'',
-            'mobile'=>'',
-        ];
+        
         $data['lender_id']=$user1['id'];
         $data['lender_name']=$user1['user_nickname'];
         $data['lender_idcard']=$user1['user_login'];
         $data['lender_mobile']=$user1['mobile'];
-        //判断是借款还是出借
+        //判断是借款还是出借，对方信息保存
         if(empty($data0['send_type'])){
             $count=$m_paper->where(['borrower_id'=>$user0['id'],'start_time'=>$data['start_time']])->count();
             
@@ -357,9 +363,9 @@ class PaperController extends UserBaseController
         $user=session('user'); 
         $info_reply['send_type']=0;
         $send_type=0;
-        //补借条时对方还没有信息
-         //补借条时对方还没有id所以比较name
-        if(($info_reply['is_borrower']==1 && $info_paper['lender_name']==$user['user_nickname']) || ($info_reply['is_borrower']==0 && $info_paper['borrower_name']==$user['user_nickname'])){
+        
+         //补借条时对方id
+        if(($info_reply['is_borrower']==1 && $info_paper['lender_id']==$user['id']) || ($info_reply['is_borrower']==0 && $info_paper['borrower_id']==$user['id'])){
             $info_reply['send_type']=1;
         }
         $statuss=config('paper_status');
@@ -397,7 +403,7 @@ class PaperController extends UserBaseController
             $this->error($result[1],$result[2]);
         }
        //判断是借款人发起，还是出借人发起
-        if($info_reply['is_borrower']==1 && $info_paper['lender_name']==$user['user_nickname']){
+        if($info_reply['is_borrower']==1 && $info_paper['lender_id']==$user['id']){
            
             //处理人是出借人
             $user1=$m_user->where('id',$info_paper['borrower_id'])->find();
@@ -408,7 +414,7 @@ class PaperController extends UserBaseController
                 'lender_idcard'=>$user['user_login'],
                 'lender_mobile'=>$user['mobile'],
             ];
-        }elseif($info_reply['is_borrower']==0 && $info_paper['borrower_name']==$user['user_nickname']){
+        }elseif($info_reply['is_borrower']==0 && $info_paper['borrower_id']==$user['id']){
             
             $user2=$m_user->where('id',$info_paper['lender_id'])->find();
             $user1=$user; 
@@ -515,14 +521,16 @@ class PaperController extends UserBaseController
                     //累计借款笔数
                     $data_user1['borrow_num']=$user1['borrow_num']+1; 
                     //borrow_money累计借款
-                    $data_user1['borrow_money']=$user1['borrow_money']+$info_paper['money'];
+                    $data_user1['borrow_money']=bcadd($user1['borrow_money'],$info_paper['money'],2);
                     
                     //出借人信息
                      //累计出借
-                    $data_user2['lender_money']=$user2['lender_money']+$info_paper['money'];
+                    $data_user2['lender_money']=bcadd($user2['lender_money'],$info_paper['money'],2);
                     $m_user->where('id',$user1['id'])->update($data_user1);
                     $m_user->where('id',$user2['id'])->update($data_user2);
                 }
+                $user=$m_user->where('id',$uid)->find();
+                session('user',$user);
                
             }
             Db::commit();
