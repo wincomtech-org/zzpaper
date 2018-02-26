@@ -449,12 +449,11 @@ class PaperController extends UserBaseController
                     $data_paper['expire_day']=bcdiv(($info_paper['end_time']-strtotime(date('Y-m-d'))),86400,0);
                    
                     if($data_paper['expire_day']>=1){
-                        
                         $data_paper['status']=4;
                     }elseif($data_paper['expire_day']==0){
                         $data_paper['status']=3;
                     }else{
-                        $this->error('借条信息错误',url('user/index/index'));
+                        $this->error('借条信息错误或失效',url('user/index/index'));
                     }
                    
                     break;
