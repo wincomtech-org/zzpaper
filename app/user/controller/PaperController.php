@@ -506,7 +506,10 @@ class PaperController extends UserBaseController
                     //确认还款后更新用户信息
                     $data_user1=['back'=>bcsub($user1['back'],$info_paper['money'],2)];
                     $data_user2=['send'=>bcsub($user2['send'],$info_paper['money'],2)];
-                     
+                    //计算收益
+                    $rates=bcsub($info_paper['final_money'],$info_paper['money'],2);
+                    $data_user2['money']=bcadd($user2['money'],$rates,2);
+                    $data_user1['money']=bcsub($user1['money'],$rates,2);
                     $m_user->where('id',$user1['id'])->update($data_user1);
                     $m_user->where('id',$user2['id'])->update($data_user2);
                 }elseif($info_reply['type']=='send'){

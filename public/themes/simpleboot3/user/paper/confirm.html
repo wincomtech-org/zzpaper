@@ -40,11 +40,7 @@
                     <div class='box-tit'>借条状态：</div>
                     <div class='box-con'><input type="text" name='identity_name' value='{$info_paper.status_name}' class='red' readonly></div>
                 </li>
-                 <li class="box-li padding-all">
-                    <div class='box-tit'>借款日期：</div>
-                    <div class='box-con'><input type="text" name='date_borrowing'  value="{$info_paper.start_time|date='Y-m-d',###}"  readonly></div>
-                </li>
-                
+                 
                 <li class="box-li padding-all box-li-long">
                     <div class='box-tit gray'>申请人：</div>
                		<div class='box-con'><input type="text" value="<eq name='info_reply.is_borrower' value='1'>{$info_paper.borrower_name}<else/>{$info_paper.lender_name}</eq>"  readonly></div>

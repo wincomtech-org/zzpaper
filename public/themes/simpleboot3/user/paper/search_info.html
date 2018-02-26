@@ -51,6 +51,7 @@
                     <span class='list5 <eq name="vo.status" value="5">red</eq>'>
                     {$paper_status[$vo.status]} 
                    <switch name="vo.status">
+                   		<case value="3">今日到期</case>
                    		<case value="4">|还剩{$vo.expire_day}天</case>
                    		<case value="5">|逾期{$vo.overdue_day}天</case>
                    </switch>

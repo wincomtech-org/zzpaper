@@ -121,13 +121,13 @@
                      
                     <li class=''>
                         <a href="javascript:void(0);" class='red delay-alert'>
-                            延期
+                           申请延期
                         </a>
                     </li>
                     
                     <li class=''>
-                        <a href="javascript:void(0);" class='<eq name="paper.back" value="0">red back-alert</eq>'>
-                            还款
+                        <a href="javascript:void(0);" class='red back-alert'>
+                           <eq name="paper.back" value="0">申请还款<else/>确认已还款</eq>
                         </a>
                     </li>
                      
@@ -155,10 +155,16 @@
        
     <script>
     	var oid="{$paper.oid}";
+    	var back="{$paper.back}";
     	var final_money="{$paper.final_money}"; 
          $('.back-alert').click(function(){
         	 $('.error-tip').text('提示'); 
-        	 $('.pop_up1 .promit-html').text('你确定要还款吗？应还'+{$paper.final_money}+'元');
+        	 if(back=='0'){
+        		 $('.pop_up1 .promit-html').text('你确定要申请还款吗？应还'+{$paper.final_money}+'元');
+        	 }else{
+        		 $('.pop_up1 .promit-html').text('你确定对方已还款吗？对方应还'+{$paper.final_money}+'元');
+        	 }
+        	 
             $('.pop_up').hide();
             $('.pop_up1').show();
         });
@@ -187,12 +193,16 @@
                  url: "{:url('user/info/ajax_reply')}",
                  dataType: 'json',
                  data:{'oid':oid,'psw':psw,'final_money':final_money,'type':'back'},
-                 success: function(data){
+                 success: function(data){ 
                  	$('.error-tip').text(data.msg);
                  	if(data.url!=''){
-                 		setTimeout(function(){
-                 			location.href=data.url;
-                         },2000);
+                 		if(back=='1' && data.code==1){
+                 			location.href=data.url; 
+	                   	 }else{
+	                   		setTimeout(function(){
+	                 			location.href=data.url;
+	                         },2000);
+	                   	 } 
                  	} 
                  },
                  error: function(xhr, type){

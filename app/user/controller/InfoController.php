@@ -160,9 +160,7 @@ class InfoController extends UserBaseController
                 }
                 break;
             case 'back':
-                if($uid!=$info_paper['borrower_id']){
-                    $this->error('非借款人，不能还款',url('user/info/index'));
-                }
+                
                 $tmp=zz_get_money_overdue($info_paper['real_money'], $info_paper['money'], $info_paper['rate'], $info_paper['overdue_day']);
                 if($tmp!=$data['final_money']){
                     $this->error('还款信息错误',url('user/info/index'));
@@ -190,10 +188,42 @@ class InfoController extends UserBaseController
         }else{
             $this->error('借条信息错误',url('user/info/index'));
         }
+        //出借人主动点击已还款
+        if($uid==$info_paper['lender_id'] && $data['type']=='back'){
+            Db::startTrans();
+            try {
+                $m_paper->where('id',$info_paper['id'])->delete();
+                $info_paper['final_money']=$data['final_money'];
+                $info_paper['update_time']=time();
+                unset($info_paper['id']);
+                unset($info_paper['status']);
+                unset($info_paper['expire_day']);
+                Db::name('paper_old')->insert($info_paper);
+                //确认还款后更新用户信息
+                $user1=$m_user->where('id',$info_paper['borrower_id'])->find();
+                $user2=$user;
+                $data_user1=['back'=>bcsub($user1['back'],$info_paper['money'],2)];
+                $data_user2=['send'=>bcsub($user2['send'],$info_paper['money'],2)];
+                //计算收益
+                $rates=bcsub($info_paper['final_money'],$info_paper['money'],2);
+                $data_user2['money']=bcadd($user2['money'],$rates,2);
+                $data_user1['money']=bcsub($user1['money'],$rates,2);
+                $m_user->where('id',$user1['id'])->update($data_user1);
+                $m_user->where('id',$user2['id'])->update($data_user2);
+               
+            } catch (\Exception $e) {
+                Db::rollBack();
+                $this->error('操作失败！'.$e->getMessage());
+            }
+            Db::commit(); 
+            $this->success('已确认还款',url('user/index/index'));
+        }
+        
         $data['insert_time']=time();
         $data['update_time']=$data['insert_time'];
-        $id=$m_reply->insertGetId($data);
+        $id=$m_reply->insertGetId($data); 
         if($id>=1){
+           
             $this->success('申请提交成功,请尽快联系对方确认，否则该申请将在第三日凌晨过期！',url('user/info/paper',['id'=>$info_paper['id']]));
         }else{
             $this->error('申请提交失败');
