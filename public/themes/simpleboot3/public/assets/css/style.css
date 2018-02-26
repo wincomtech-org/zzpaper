@@ -502,6 +502,9 @@
     color:#fff;
     padding:.4rem 0;
 }
+.group-person-second.group-white li a{
+    color:#fff;
+}
 .group-person-second.group-white li .text,.group-person-second.group-white li b{
     display:block;
     line-height:20px;
