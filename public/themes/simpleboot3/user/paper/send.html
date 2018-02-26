@@ -36,7 +36,8 @@
                             <span class="icon icon-mess icon_mess9"></span>
                        </label>
                        
-                       <a href="">已阅读用户协议</a>
+                       已阅读<a href="{:url('user/public/protocol',['name'=>'borrower'])}">《借款协议》</a>
+                      
                    </div>
                 </li>
                 <p class='tip box-p'>风险提示</p>
@@ -161,7 +162,7 @@
                  $('.error-tip').text('提示：请输入正确金额');
                  $('input[name="borrowing_balance"]').focus();
                  return false;
-             }if(name=='' || isChinaName(name) == false){
+             }if(name==''){
                  $('.error-tip').text('提示：请输入对方姓名');
                  $('input[name="name"]').focus();
                  return false;

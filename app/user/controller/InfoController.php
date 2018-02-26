@@ -66,9 +66,9 @@ class InfoController extends UserBaseController
 //         $where['status']=['eq',5];
 //         $list_overdue=$m_paper->where($where)->order('overdue_day asc')->column('');
          
-        $list=$m_paper->where($where)->order('status asc,expire_day asc,overdue_day asc')->column('');
+        $list=$m_paper->where($where)->order('status asc,expire_day asc,overdue_day asc,id desc')->column('');
         unset($where['status']);
-        $list_old=Db::name('paper_old')->where($where)->order('overdue_day asc')->column('');
+        $list_old=Db::name('paper_old')->where($where)->order('overdue_day asc,id desc')->column('');
        
         $this->assign('list',$list);
         
@@ -89,10 +89,10 @@ class InfoController extends UserBaseController
             $where['lender_name']=['like','%'.$name.'%'];
         }
         $m_paper=Db::name('paper');
-        
-        $list=$m_paper->where($where)->order('status asc,expire_day asc,overdue_day asc')->column('');
+       
+        $list=$m_paper->where($where)->order('status asc,expire_day asc,overdue_day asc,id desc')->column('');
         unset($where['status']);
-        $list_old=Db::name('paper_old')->where($where)->order('overdue_day asc')->column('');
+        $list_old=Db::name('paper_old')->where($where)->order('overdue_day asc,id desc')->column('');
         
         $this->assign('list',$list); 
         $this->assign('list_old',$list_old);
@@ -214,7 +214,8 @@ class InfoController extends UserBaseController
         }else{
             $paper['status_name']='已还款结束';
         }
-        
+        $paper['borrower_idcard']='**************'.substr($paper['borrower_idcard'], -4);
+        $paper['lender_idcard']='**************'.substr($paper['lender_idcard'], -4);
         $protocol=Db::name('guide')->where('name','borrower')->find();
         $paper['content']=$protocol['content'];
         $this->assign('info',$paper); 
