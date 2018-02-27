@@ -68,15 +68,20 @@ class IndexController extends HomeBaseController
                 //根据openid和access_token查询用户信息
                 $access_token = $json_obj['access_token'];
                 $openid = $json_obj['openid'];
-                dump($json_obj);
+                
                 $get_user_info_url = 'https://api.weixin.qq.com/sns/userinfo?access_token='.$access_token.'&openid='.$openid.'&lang=zh_CN';
                 //获取到用户信息
                 $userinfo =$this->https_request($get_user_info_url);
-                
+                if(empty($userinfo['openid'])){
+                    session('wx',null);
+                    session('redirect',null);
+                    exit('微信授权信息获取失败，请退出重试');
+                }
                 session('wx',$userinfo);
                  
                 //获取信息后跳转到注册页
                 session('redirect',null);
+                
                 $this->redirect(url('user/register/register'));
             }else{
                 
