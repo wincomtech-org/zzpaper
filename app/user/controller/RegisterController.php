@@ -148,6 +148,7 @@ class RegisterController extends HomeBaseController
                 'last_login_time' => time(),
                 'user_status'     => 1,  
                 "user_type"       => 2,//会员
+                'is_name'=>1,
             ];
             if (!$validate->check($data)) {
                 $this->error($validate->getError());
