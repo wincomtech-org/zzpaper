@@ -79,7 +79,7 @@ class IndexController extends HomeBaseController
                 session('redirect',null);
                 $this->redirect(url('user/register/register'));
             }else{
-                dump(session(''));
+                
                 exit('微信授权失败，请退出重试');
             }
              //获取到openid就查询用户信息，没有信息需要查询微信信息后注册，有信息到主页
