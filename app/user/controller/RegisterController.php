@@ -37,8 +37,9 @@ class RegisterController extends HomeBaseController
      */
     public function register()
     {
-        if(empty(session('wx.nickname'))){
-            $this->error('请通过微信公众号',url('portal/index/index'));
+        if(empty(session('wx.openid'))){
+            
+            $this->error('请通过微信公众号注册',url('portal/index/index'));
         }
         $this->assign('html_title','注册');
        return $this->fetch();
@@ -147,8 +148,8 @@ class RegisterController extends HomeBaseController
                 'create_time'     => time(),
                 'last_login_time' => time(),
                 'user_status'     => 1,  
-                "user_type"       => 2,//会员
-                'is_name'=>1,
+                "user_type"       => 2,//会员 
+                'is_name'=>1,   //默认实名
             ];
             if (!$validate->check($data)) {
                 $this->error($validate->getError());

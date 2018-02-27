@@ -45,6 +45,7 @@ class IndexController extends HomeBaseController
                 $url0='https://open.weixin.qq.com/connect/oauth2/authorize?appid='.$appid.
                 '&redirect_uri='.$index0.'&response_type=code&scope='.$scope.'&state=STATE#wechat_redirect';
                 session('wx',['scope'=>$scope,'url0'=>$url0]);
+               
                 header("Location: ".$url0);
                 exit('正在获取微信授权openid');
             }
@@ -57,6 +58,7 @@ class IndexController extends HomeBaseController
                 $url="https://api.weixin.qq.com/sns/oauth2/access_token?appid=".$appid.
                 "&secret=".$appsecret."&code=".$code."&grant_type=authorization_code";
                 $res = $this->https_request($url); 
+                
             }elseif($scope=='snsapi_userinfo'){
                 //userinfo
                 //通过code换取网页授权access_token（访问令牌） 
@@ -66,19 +68,23 @@ class IndexController extends HomeBaseController
                 //根据openid和access_token查询用户信息
                 $access_token = $json_obj['access_token'];
                 $openid = $json_obj['openid'];
+                dump($json_obj);
                 $get_user_info_url = 'https://api.weixin.qq.com/sns/userinfo?access_token='.$access_token.'&openid='.$openid.'&lang=zh_CN';
                 //获取到用户信息
                 $userinfo =$this->https_request($get_user_info_url);
+                
                 session('wx',$userinfo);
+                 
                 //获取信息后跳转到注册页
                 session('redirect',null);
                 $this->redirect(url('user/register/register'));
             }else{
+                dump(session(''));
                 exit('微信授权失败，请退出重试');
             }
              //获取到openid就查询用户信息，没有信息需要查询微信信息后注册，有信息到主页
             if(empty($res['openid'])){
-                exit('微信授权失败，退出或<a href="'.session('wx.url0').'">点击重试</a>');
+                exit('微信信息获取失败，请退出重试');
             }else{
                 session('wx.openid',$res['openid']);
                 $user=Db::name('user')->where('openid',$res['openid'])->find();
