@@ -21,7 +21,7 @@ class PublicController extends HomeBaseController
         $url=$this->request->param('url','','trim');
         import('phpqrcode',EXTEND_PATH); 
         $url = urldecode($url);
-        \QRcode::png($url);
+        \QRcode::png($url, false, QR_ECLEVEL_L,5, 2);
     }
      //借款协议
     public function protocol(){
