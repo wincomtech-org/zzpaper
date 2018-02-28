@@ -903,7 +903,8 @@ search_con_ul_div dl{
 /* 二维码 */
 .erweima p{
     line-height:1.6;
-    font-size:14px;
+    font-size:16px;
+    color:#000;
 }
 .erweima:first-child p.erweima_tit{
     border-top:1px solid transparent;
@@ -924,15 +925,23 @@ search_con_ul_div dl{
     word-wrap: break-word;
     line-height:1.6;
 }
-
+.erweima{
+    position:absolute;
+    top:40%;
+    left:50%;
+    -webkit-transform:translate(-50%,-50%);  
+    -moz-transform:translate(-50%,-50%);           
+    -ms-transform:translate(-50%,-50%);
+    transform:translate(-50%,-50%);
+    
+}
 
 .erweima .img {
     text-align:center;
 }
 .erweima .img img{
-    width:160px;
-    height:160px;
-    margin-top:8px;
+    width:200px;
+    height:200px;
 }
 
 
