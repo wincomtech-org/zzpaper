@@ -71,7 +71,7 @@ class TimeController extends HomeBaseController
         //3更新过期申请
         $where_reply2=[ 
             'is_overtime'=>['eq',0],
-            'update_time'=>['lt',$time0]
+            'update_time'=>['elt',$time0]
         ];
         $rows=$m_reply->where($where_reply2)->update(['is_overtime'=>1,'update_time'=>$time]);
         $data_action[]=[
@@ -209,12 +209,11 @@ class TimeController extends HomeBaseController
         zz_log('更新借条发起和借条不同意为过期'.$rows.'条','time.log');
         Db::name('action')->insertAll($data_action);
         zz_log('end','time.log');
-        
+        $mysqli->close();
         $sleep=$time+3600*24+2-time();
         zz_log("sleep时间".($sleep/3600)."小时",'3','time.log');
-        echo "sleep时间".($sleep/3600)."小时";
+        echo "sleep时间".($sleep/3600)."小时";  
         sleep($sleep);
-        error_log(date('Y-m-d H:i:s')."\r\n",'3','time.log');
         $url=url('portal/time/time','',true,true);
         file_get_contents($url);
        exit('执行结束');

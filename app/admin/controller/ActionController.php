@@ -68,5 +68,24 @@ class ActionController extends AdminBaseController
         $this->assign('admins',$admins); 
         return $this->fetch();
     }
+    /**
+     * 清空系统任务
+     * @adminMenu(
+     *     'name'   => '清空系统任务',
+     *     'parent' => 'index',
+     *     'display'=> false,
+     *     'hasView'=> false,
+     *     'order'  => 0,
+     *     'icon'   => '',
+     *     'remark' => '清空系统任务',
+     *     'param'  => ''
+     * )
+     */
+    public function clear()
+    {
+        $m=$this->m;
+        $m->where('type','system')->delete();
+        $this->success('已清空');
+    }
     
 }
