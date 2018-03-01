@@ -159,7 +159,7 @@ class TimeController extends HomeBaseController
         ];
         zz_log('更新了用户逾期累计'.$rows.'条','time.log');
         
-        $rows=$m_paper->where('status',3)->update(['status'=>4,'expire_day'=>1]);
+        $rows=$m_paper->where('status',3)->update(['status'=>5,'overdue_day'=>1]);
         $data_action[]=[
             'aid'=>1,
             'time'=>time(),
@@ -170,7 +170,7 @@ class TimeController extends HomeBaseController
         zz_log('更新今日到期为逾期'.$rows.'条','time.log');
         
         ////5更新还剩1天的借条今日到期 
-        $rows=$m_paper->where('status',3)->update(['status'=>4,'expire_day'=>1]);
+        $rows=$m_paper->where(['status'=>4,'expire_day'=>1])->update(['status'=>3,'expire_day'=>0]);
         $data_action[]=[
             'aid'=>1,
             'time'=>time(),
@@ -212,6 +212,7 @@ class TimeController extends HomeBaseController
         
         $sleep=$time+3600*24+2-time();
         zz_log("sleep时间".($sleep/3600)."小时",'3','time.log');
+        echo "sleep时间".($sleep/3600)."小时";
         sleep($sleep);
         error_log(date('Y-m-d H:i:s')."\r\n",'3','time.log');
         $url=url('portal/time/time','',true,true);

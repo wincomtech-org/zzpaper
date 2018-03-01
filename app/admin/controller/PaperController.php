@@ -124,13 +124,14 @@ class PaperController extends AdminBaseController
     public function editPost()
     {
         $m=$this->m;
-        
+        $m_user=Db::name('user');
         $data=$this->request->param();
         $where=['id'=>$data['id']];
         $info=$m->where($where)->find();
         if(empty($info)){
             $this->error('借条不存在，请刷新页面');
         }
+        
         $statuss=$this->paper_status;
         $data['update_time']=time();
         $data_action=[
@@ -146,13 +147,29 @@ class PaperController extends AdminBaseController
         Db::startTrans();
         try {
             switch($data['status']){
-                case '7':
-                    //$m->where($where)->delete();
+                case '6':
+                    $m->where($where)->delete();
                     unset($info['id']);
                     unset($info['status']);
-                  
+                    unset($info['expire_day']);
                     $info['update_time']=$data['update_time'];
+                    //管理员点击已还款则计算逾期还款
+                    $info['final_money']=zz_get_money_overdue($info['real_money'],$info['money'],config('rate_overdue'),$info['overdue_day']);
+                     
                     Db::name('paper_old')->insert($info);
+                   
+                     
+                    //确认还款后更新用户信息
+                    $user1=$m_user->where('id',$info['borrower_id'])->find();
+                    $user2=$m_user->where('id',$info['lender_id'])->find();
+                    $data_user1=['back'=>bcsub($user1['back'],$info['money'],2)];
+                    $data_user2=['send'=>bcsub($user2['send'],$info['money'],2)];
+                    //计算收益
+                    $rates=bcsub($info['final_money'],$info['money'],2);
+                    $data_user2['money']=bcadd($user2['money'],$rates,2);
+                    $data_user1['money']=bcsub($user1['money'],$rates,2);
+                    $m_user->where('id',$user1['id'])->update($data_user1);
+                    $m_user->where('id',$user2['id'])->update($data_user2);
                     break;
                /*  case '1':
                     $row=$m->where($where)->update(['status'=>$data['status'],'update_time'=>$data['update_time']]);
