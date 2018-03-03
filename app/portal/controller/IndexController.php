@@ -18,6 +18,7 @@ class IndexController extends HomeBaseController
     private $token='zzpaper';
     public function index()
     {
+         
         $redirect=session('redirect');
         if(empty($redirect)){
             $redirect=$this->request->server('HTTP_REFERER');
@@ -35,10 +36,10 @@ class IndexController extends HomeBaseController
             // 公众号的id和secret
             $appid = config('wx_appid');
             $appsecret = config('wx_appsecret');
+           
             $index=url('portal/index/index','',true,true);
             $index0= urlencode($index);
-            $scope='snsapi_userinfo';
-             
+            
             if(empty($_GET["code"])){ 
                //开始只获取openid 
                 $scope='snsapi_base';
@@ -50,60 +51,35 @@ class IndexController extends HomeBaseController
                 exit('正在获取微信授权openid');
             }
             $code = $_GET["code"];
+            //openid
+            $url="https://api.weixin.qq.com/sns/oauth2/access_token?appid=".$appid.
+            "&secret=".$appsecret."&code=".$code."&grant_type=authorization_code";
+            $res =zz_curl($url); 
             
-            $scope=session('wx.scope');
-            //判断是获取用户信息还是基本信息
-            if($scope=='snsapi_base'){
-                //openid
-                $url="https://api.weixin.qq.com/sns/oauth2/access_token?appid=".$appid.
-                "&secret=".$appsecret."&code=".$code."&grant_type=authorization_code";
-                $res = $this->https_request($url); 
-                
-            }elseif($scope=='snsapi_userinfo'){
-                //userinfo
-                //通过code换取网页授权access_token（访问令牌） 
-                $get_token_url = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid='.$appid.'&secret='.$appsecret.'&code='.$code.'&grant_type=authorization_code';
-                //获取到access_token
-                $json_obj = $this->https_request($get_token_url);
-                //根据openid和access_token查询用户信息
-                $access_token = $json_obj['access_token'];
-                $openid = $json_obj['openid'];
-                
-                $get_user_info_url = 'https://api.weixin.qq.com/sns/userinfo?access_token='.$access_token.'&openid='.$openid.'&lang=zh_CN';
-                //获取到用户信息
-                $userinfo =$this->https_request($get_user_info_url);
-                if(empty($userinfo['openid'])){
-                    session('wx',null);
-                    session('redirect',null);
-                    exit('微信授权信息获取失败，请退出重试');
-                }
-                session('wx',$userinfo);
-                 
-                //获取信息后跳转到注册页
-                session('redirect',null);
-                
-                $this->redirect(url('user/register/register'));
-            }else{
-                
-                exit('微信授权失败，请退出重试');
-            }
              //获取到openid就查询用户信息，没有信息需要查询微信信息后注册，有信息到主页
             if(empty($res['openid'])){
                 exit('微信信息获取失败，请退出重试');
             }else{
                 session('wx.openid',$res['openid']);
+                
                 $user=Db::name('user')->where('openid',$res['openid'])->find();
                 if(empty($user)){ 
-                    //需要授权获取微信信息
-                    $scope='snsapi_userinfo';
-                    $url0='https://open.weixin.qq.com/connect/oauth2/authorize?appid='.$appid.
-                    '&redirect_uri='.$index0.'&response_type=code&scope='.$scope.'&state=STATE#wechat_redirect';
-                    
-                    session('wx.url0',$url0);
-                    session('wx.scope',$scope);
-                    
-                    header("Location: ".$url0);
-                    exit('正在授权获取微信信息'); 
+                    //需要获取微信信息 
+                    $access_token = config('access_token');
+                    $openid = $res['openid'];
+                    $get_user_info_url='https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$access_token.'&openid='.$openid.'&lang=zh_CN';
+                    //获取到用户信息
+                    $userinfo =zz_curl($get_user_info_url);
+                    if(empty($userinfo['openid'])){
+                        zz_log('user_info授权失败$$access_token'.$access_token);
+                        session('wx',null);
+                        session('redirect',null);
+                        exit('微信授权信息获取失败，请退出重试');
+                    }else{
+                        session('wx',$userinfo); 
+                        session('redirect',null);
+                        $this->redirect(url('user/register/register'));
+                    }
                 }else{
                     session('user',$user);
                     $this->redirect($redirect);
@@ -119,23 +95,7 @@ class IndexController extends HomeBaseController
         
         exit;
     }
-   /*  cURL函数简单封装 */
-    function https_request($url, $data = null)
-    {
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, FALSE);
-        if (!empty($data)){
-            curl_setopt($curl, CURLOPT_POST, 1);
-            curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
-        }
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        $output = curl_exec($curl);
-        curl_close($curl);
-        return json_decode($output, true);
-    }
-    
+   /* 测试微信服务器token */
     public function checkSignature()
     {
          
@@ -163,6 +123,5 @@ class IndexController extends HomeBaseController
         }
         exit();
     }
-     
     
 }
