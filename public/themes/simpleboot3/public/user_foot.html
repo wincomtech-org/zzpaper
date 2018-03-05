@@ -20,15 +20,59 @@
             </div>
         </dl>
         <dl>
-            <a href="javascript:void(0);">
+            <a id="wx_msg" href="javascript:void(0);">
                 <dt class='icon icon_menu icon_menu3'></dt>
                 <dd>一键还款</dd>
             </a>
         </dl>
     </nav>
+    <div class="msg-div pop_up" style='display:none;'>
+             
+            <p class="msg-p"></p>
+           
+            <ul class="pop_up_ul">
+                <li><a href="javascript:void(0);" class='blue-text'>关闭</a></li> 
+            </ul>
+        </div>  
     <include file="public@foot" /> 
     <script src="__TMPL__/public/assets/dist/dropload.min.js"></script>
     <script src="__TMPL__/public/assets/js/dropscroll.js"></script> 
     <script>
         hasnav(); 
+        var click=0;
+        $('#wx_msg').click(function(){
+        	if(click==0){
+        		click=1;
+        	}else{
+        		return 0;
+        	}
+        	//ajax提交
+            $.ajax({
+                type: 'POST',
+                url: "{:url('user/paper/msg')}",
+                dataType: 'json',
+                data:{'click':click},
+                success: function(data){
+                	$('.msg-div .msg-p').text(data.msg);
+                	$('.msg-div').show();
+                	console.log(data.msg);
+                	if(data.url!=''){
+                		 location.href=data.url; 
+                	} 
+                	click=0;
+                },
+                error: function(){
+                	$('.msg-div .msg-p').text('服务器连接失败');
+                	$('.msg-div').show();
+                	console.log('服务器连接失败'); 
+                	click=0;
+                }
+            });
+            return false;
+        });
+        $('.msg-div .pop_up_ul li').click(function(){
+        	click=0;
+        	$('.msg-div .msg-p').text('');
+        	$('.msg-div').hide();
+        });
     </script>

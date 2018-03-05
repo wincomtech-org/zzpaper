@@ -546,7 +546,49 @@ class PaperController extends UserBaseController
         }
         $this->success('数据已更新成功',url('user/index/index'));
     }
-    
-    
+    /* 一键催款 */
+    public function msg(){
+        $uid=session('user.id');
+        $user=Db::name('user')->where('id',$uid)->find();
+        
+        $date=date('Y-m-d');
+        if($date==$user['msg_date']){
+            $this->error('每天只能催款一次');
+        }else{
+            Db::name('user')->where('id',$uid)->update(['msg_date'=>$date]); 
+        }
+        $where=[
+            'lender_id'=>['eq',$uid],
+            'status'=>['in',[3,5]],
+        ];
+        $list=Db::name('paper')->where($where)->column('');
+        if(empty($list)){
+            $this->error('没有到期和逾期的借款用户');
+        }
+        $ok=0;
+        $fail='';
+        $url0=url('user/info/borrower','',true,true);
+        $type='msg_back';
+        foreach($list as $k=>$v){
+            $data=[
+                '你的借款到期了',
+                $v['borrower_name'],
+                $v['money'],
+                date('Y-m-d',$v['insert_time']),
+                date('Y-m-d',$v['insert_time']),
+                '点击查看详情'
+            ]; 
+            $res=zz_wxmsg($user['openid'], $url0, $data, $type);
+            if($res['errcode']==0){
+                $ok++;
+            }else{
+                $fail.=',用户'.$v['borrower_name'];
+            }
+        }
+        if($fail!=''){
+            $fail.='催款信息发送失败';
+        }
+        $this->error('发送催款通知'.$ok.'条'.$fail);
+    }
      
 }

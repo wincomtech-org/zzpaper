@@ -160,8 +160,8 @@ class InfoController extends UserBaseController
                 }
                 break;
             case 'back':
-                
-                $tmp=zz_get_money_overdue($info_paper['real_money'], $info_paper['money'], $info_paper['rate'], $info_paper['overdue_day']);
+                 
+                $tmp=zz_get_money_overdue($info_paper['real_money'], $info_paper['money'], config('rate_overdue'),$info_paper['overdue_day']);
                 if($tmp!=$data['final_money']){
                     $this->error('还款信息错误',url('user/info/index'));
                 }

@@ -76,6 +76,83 @@ function zz_curl($url, $data = null)
     curl_close($curl);
     return json_decode($output, true);
 }
+function zz_wxmsg($openid,$url0,$data,$type){
+    $token=config('access_token');
+    $url = 'https://api.weixin.qq.com/cgi-bin/message/template/send?access_token='.$token;
+    if($type=='msg_back'){
+        $template_id=config($type);
+        $json = '{
+            "touser":"'.$openid.'",
+            "template_id":"'.$template_id.'",
+            "url":"'.$url0.'",
+            "topcolor":"#FF0000",
+            "data":{
+                "first": {
+                "value":"'.$data[0].'",
+                "color":"#173177"
+                },
+                "keyword1":{
+                "value":"'.$data[1].'",
+                "color":"#173177"
+                },
+                "keyword2":{
+                "value":"'.$data[2].'",
+                "color":"#173177"
+                },
+                "keyword3":{
+                "value":"'.$data[3].'",
+                "color":"#173177"
+                },
+                "keyword4":{
+                "value":"'.$data[4].'",
+                "color":"#173177"
+                }, 
+                "remark":{
+                "value":"'.$data[5].'",
+                "color":"#173177"
+                }
+            }
+        }';
+    }elseif($type=='msg_back'){
+        $template_id=config($type);
+        $json = '{
+            "touser":"'.$openid.'",
+            "template_id":"'.$template_id.'",
+             "url":"'.$url0.'",
+            "topcolor":"#FF0000",
+            "data":{
+                "first": {
+                "value":"'.$data[0].'",
+                "color":"#173177"
+                },
+                "keyword1":{
+                "value":"'.$data[1].'",
+                "color":"#173177"
+                },
+                "keyword2":{
+                "value":"'.$data[2].'",
+                "color":"#173177"
+                },
+                "keyword3":{
+                "value":"'.$data[3].'",
+                "color":"#173177"
+                },
+                "keyword4":{
+                "value":"'.$data[4].'",
+                "color":"#173177"
+                },
+                "remark":{
+                "value":"'.$data[5].'",
+                "color":"#173177"
+                }
+            }
+        }';
+    }else{
+        return ['errorcode'=>1,'errmsg'=>'参数错误','msgid'=>0]; 
+    } 
+    $res=zz_curl($url,$json);
+    return $res;
+}
 /* 过滤HTML得到纯文本 */
 function zz_get_content($list,$len=100){
     //过滤富文本
