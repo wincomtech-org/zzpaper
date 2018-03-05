@@ -549,13 +549,14 @@ class PaperController extends UserBaseController
     /* 一键催款 */
     public function msg(){
         $uid=session('user.id');
-        $user=Db::name('user')->where('id',$uid)->find();
-        
+        $m_user=Db::name('user');
+        $user=$m_user->where('id',$uid)->find(); 
         $date=date('Y-m-d');
+       
         if($date==$user['msg_date']){
             $this->error('每天只能催款一次');
         }else{
-            Db::name('user')->where('id',$uid)->update(['msg_date'=>$date]); 
+            $m_user->where('id',$uid)->update(['msg_date'=>$date]); 
         }
         $where=[
             'lender_id'=>['eq',$uid],
@@ -578,7 +579,9 @@ class PaperController extends UserBaseController
                 date('Y-m-d',$v['insert_time']),
                 '点击查看详情'
             ]; 
-            $res=zz_wxmsg($user['openid'], $url0, $data, $type);
+            //获取openid
+            $borrower=$m_user->where('id',$v['borrower_id'])->find(); 
+            $res=zz_wxmsg($borrower['openid'], $url0, $data, $type);
             if($res['errcode']==0){
                 $ok++;
             }else{
