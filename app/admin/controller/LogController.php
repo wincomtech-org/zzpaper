@@ -37,12 +37,12 @@ class LogController extends AdminbaseController {
          
        $list=[
            ['name'=>'每日任务日志','file'=>'time.log'],
+           ['name'=>'微信日志','file'=>'wx.log'],
            ['name'=>'数据库日志','file'=>'zz.log'],
            ['name'=>'日志操作','file'=>'log.log']
        ];
-        $this->assign('list',$list);
+       $this->assign('list',$list);
        return $this->fetch();
-       
         
     }
     

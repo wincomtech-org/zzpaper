@@ -583,6 +583,7 @@ class PaperController extends UserBaseController
                 $ok++;
             }else{
                 $fail.=',用户'.$v['borrower_name'];
+                zz_log('用户'.$v['borrower_name'].'催款信息发送失败'.$res['errcode'].'-'.$res['errmsg'],'wx.log');
             }
         }
         if($fail!=''){
