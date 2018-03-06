@@ -29,7 +29,7 @@ class TimeController extends HomeBaseController
         //判断重复任务
         if(strtotime($time_day)===$time){
             zz_log('重复任务，结束','time.log');
-            exit('重复任务，结束');
+           exit('重复任务，结束');
         }else{
             cmf_set_dynamic_config(['time_day'=>date('Y-m-d')]);
         }
@@ -146,7 +146,7 @@ class TimeController extends HomeBaseController
         }
         if(!empty($tmp)){
             $tmp=substr($tmp, 1);
-            $sql_overdue7=$sql_overdue7.$tmp.' on duplicate key update overdue1=1+overdue1,overdue1_money=values(overdue1_money)+overdue1_money;';
+            $sql_overdue1=$sql_overdue1.$tmp.' on duplicate key update overdue1=1+overdue1,overdue1_money=values(overdue1_money)+overdue1_money;';
             $mysqli->query($sql_overdue1);
             $rows=$mysqli->affected_rows;
         } 
@@ -212,7 +212,7 @@ class TimeController extends HomeBaseController
         $mysqli->close();
         $sleep=$time+3600*24+2-time();
         zz_log("sleep时间".($sleep/3600)."小时",'3','time.log');
-        echo "sleep时间".($sleep/3600)."小时";  
+        
         sleep($sleep);
         $url=url('portal/time/time','',true,true);
         file_get_contents($url);

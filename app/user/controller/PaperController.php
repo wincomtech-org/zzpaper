@@ -52,7 +52,7 @@ class PaperController extends UserBaseController
         ->where(['borrower_idcard'=>$idcard])
         ->order('overdue_day asc')
         ->column(''); 
-         
+        
         $this->assign('info',$info); 
         $this->assign('list1',$list1); 
         $this->assign('list2',$list2); 
