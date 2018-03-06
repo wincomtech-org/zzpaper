@@ -42,7 +42,7 @@
 	});
 function send_msg(tel,psw){ 
 	if(psw=='' || isPassword(psw)==false){ 
-		$('.error-tip').text('请先填写正确的密码'+psw);
+		$('.error-tip').text('请先填写正确的密码');
 		return false;
 	}
 	if(tel=='' || isPhoneNo(tel) == false){ 
