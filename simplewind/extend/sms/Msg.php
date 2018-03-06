@@ -6,11 +6,9 @@ class Msg{
     public function reg($phone,$content){
         $msg=session('sms');
         $time=time();
-        if(empty($msg)){
-            session('sms',['mobile'=>$phone,'content'=>$content,'time'=>$time]);
-        }elseif(($time-$msg['time'])<60){
-            return '1分钟内只能发送一次';
-        }
+        if(!empty($msg) && ($time-$msg['time'])<120){
+            return '不要频繁发送';
+        } 
          
         $statusStr = array(
             "0" => "success",
@@ -27,10 +25,13 @@ class Msg{
         //短信平台帐号
         $user=config('sms_id');
         $pass = md5(config('sms_psw')); //短信平台密码
-        $content='【'.config('zztitle').'】您的验证码是'.$content;
-        $sendurl = $smsapi."sms?u=".$user."&p=".$pass."&m=".$phone."&c=".urlencode($content);
+        
+        $content0='【'.config('zztitle').'】您的验证码是'.$content;
+        $sendurl = $smsapi."sms?u=".$user."&p=".$pass."&m=".$phone."&c=".urlencode($content0);
         $result =file_get_contents($sendurl) ;
-         
+        if($result==0){
+            session('sms',['mobile'=>$phone,'content'=>$content,'time'=>$time]);
+        } 
         return empty($statusStr[$result])?'发送失败':$statusStr[$result];
     }
     /* 短信验证  */
@@ -44,6 +45,7 @@ class Msg{
         }elseif($msg['content']!=$content){
             return '短信验证码错误';
         }else{ 
+            session('sms',null);
             return 'success';
         }
     }

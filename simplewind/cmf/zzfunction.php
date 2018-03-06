@@ -48,14 +48,14 @@ function zz_psw($user,$psw){
         $fail=session('psw');
         if(empty($fail)){
             session('psw',1);
-        }elseif($fail==2){
+        }elseif($fail==5){
             session('user',null);
             session('psw',0);
-            return [0,'密码错误已达3次，请重新登录',url('user/login/login')];
+            return [0,'密码错误已达6次，请重新登录',url('user/login/login')];
         }else{
             session('psw',$fail+1);
         }
-        return [0,'密码错误'.($fail+1).',累计三次将退出登录!',''];
+        return [0,'密码错误'.($fail+1).',累计六次将退出登录!',''];
     }
    
 }
