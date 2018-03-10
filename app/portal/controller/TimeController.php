@@ -211,7 +211,7 @@ class TimeController extends HomeBaseController
         zz_log('end','time.log');
         $mysqli->close();
         $sleep=$time+3600*24+2-time();
-        zz_log("sleep时间".($sleep/3600)."小时",'3','time.log');
+        zz_log("sleep时间".($sleep/3600)."小时",'time.log');
         
         sleep($sleep);
         $url=url('portal/time/time','',true,true);
