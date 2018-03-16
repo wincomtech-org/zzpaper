@@ -15,7 +15,7 @@ use think\db;
 /*处理每日定时任务  */
 class TimeController extends HomeBaseController
 {
-    /*处理每日定时任务  */
+    /*处理每日定时任务,crontab每日0点1分执行  */
     public function time()
     {
         zz_log('每日任务开始','time.log');
@@ -210,15 +210,15 @@ class TimeController extends HomeBaseController
         Db::name('action')->insertAll($data_action);
         zz_log('end','time.log');
         $mysqli->close();
-        $sleep=$time+3600*24+2-time();
-        zz_log("sleep时间".($sleep/3600)."小时",'time.log');
+//         $sleep=$time+3600*24+2-time();
+//         zz_log("sleep时间".($sleep/3600)."小时",'time.log');
         
-        sleep($sleep);
-        $url=url('portal/time/time','',true,true);
-        file_get_contents($url);
+//         sleep($sleep);
+//         $url=url('portal/time/time','',true,true);
+//         file_get_contents($url);
        exit('执行结束');
     }
-    /*定时获取微信的access_tocken */
+    /*定时获取微信的access_tocken,crontab每小时30分钟执行 */
     public function wx_token()
     {
         zz_log('定时获取微信的access_tocken开始','time.log');
@@ -253,9 +253,9 @@ class TimeController extends HomeBaseController
                 zz_log('获取access_token失败','time.log');
             }
             Db::name('action')->insert($data_action); 
-            sleep(3600);
-            $url=url('portal/time/wx_token','',true,true);
-            file_get_contents($url);
+//             sleep(3600);
+//             $url=url('portal/time/wx_token','',true,true);
+//             file_get_contents($url);
             exit('执行结束');
         }
     }
