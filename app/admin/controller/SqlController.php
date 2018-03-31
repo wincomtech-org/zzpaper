@@ -77,7 +77,7 @@ class SqlController extends AdminbaseController {
         $msqlback=new \SqlBack($db['hostname'], $db['username'], $db['password'], $dname,  $db['hostport'],$db['charset'],$dir);
         $url=url('index');
         if($msqlback->backup()){
-            zz_log('管理员'.session('ADMIN_ID').'备份了数据库','zz.log');
+            zz_log('管理员'.session('name').'备份了数据库','zz.log');
             $this->success('数据备份成功',$url);
         }else{
             echo "备份失败! <a href='.$url.'>返回</a>";
@@ -114,7 +114,7 @@ class SqlController extends AdminbaseController {
             $url=url('index');
             
              if($msqlback->restore($filename)){
-                 zz_log('管理员'.session('ADMIN_ID').'还原了数据库'.$filename,'zz.log');
+                 zz_log('管理员'.session('name').'还原了数据库'.$filename,'zz.log');
                  $this->success('数据还原成功',$url);
             }else{
                 echo "还原失败! <a href='.$url.'>返回</a>";
@@ -141,7 +141,7 @@ class SqlController extends AdminbaseController {
     public function del(){
         $file=$this->request->param('id','');
         if(unlink(($this->dir).$file)===true){
-             zz_log('管理员'.session('ADMIN_ID').'删除了备份数据库'.$file,'zz.log');
+             zz_log('管理员'.session('name').'删除了备份数据库'.$file,'zz.log');
             $this->success('备份已删除');
         }else{
             $this->error('删除失败');
@@ -170,7 +170,7 @@ class SqlController extends AdminbaseController {
                 $this->error('删除失败');
             }
         }
-        zz_log('管理员'.session('ADMIN_ID').'批量删除了数据库','zz.log');
+        zz_log('管理员'.session('name').'批量删除了数据库','zz.log');
          
         $this->success('备份已删除');
          
@@ -214,7 +214,7 @@ class SqlController extends AdminbaseController {
                $row=0;
            }
            $this->assign('row',$row);
-           zz_log('管理员'.session('ADMIN_ID').'使用了Sql语句'.($this->line).$data['sql'],'zz.log');
+           zz_log('管理员'.session('name').'使用了Sql语句'.($this->line).$data['sql'],'zz.log');
            
        }
         $this->assign('data',$data);
