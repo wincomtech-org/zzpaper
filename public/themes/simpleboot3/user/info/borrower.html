@@ -42,7 +42,7 @@
                                 <dl>
                                     <dd class=''>{$vo.lender_name}</dd>
                                     <dd class=''>{$vo.money}</dd>
-                                    <dd class='<eq name="vo.status" value="5">red</eq>'>
+                                    <dd class='paper_color{$vo.status}'>
                                     <switch name="vo.status">
                                     	<case value="3">今日到期</case>
 				                   		<case value="4">还剩{$vo.expire_day}天</case>
@@ -65,7 +65,7 @@
                                 <dl>
                                     <dd class=''>{$vo.lender_name}</dd>
                                     <dd class=''>{$vo.money}</dd>
-                                    <dd class='<neq name="vo.overdue_day" value="0">red</neq>'> 
+                                    <dd class='paper_color6'> 
 				                  		已还款|<eq name="vo.overdue_day" value="0">未逾期<else/>逾期{$vo.overdue_day}天</eq>
                                     </dd> 
                                 </dl>
