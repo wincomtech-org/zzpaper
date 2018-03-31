@@ -62,10 +62,6 @@
                     <td>{$vo.last_login_ip}</td>
                     <td>{$user_statuses[$vo['user_status']]}</td>
                     <td>
-                   
-                        <a href="{:url('delete',array('id'=>$vo['id']))}"  class="js-ajax-delete"
-                                data-msg="确认删除吗?有未完成借款的用户不能删除!">删除</a>
-                          &nbsp; &nbsp; &nbsp;
                         <empty name="vo.user_status">
                              <a href="{:url('cancelban',array('id'=>$vo['id']))}"
                                 class="js-ajax-delete"
