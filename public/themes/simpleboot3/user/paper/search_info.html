@@ -48,7 +48,7 @@
                     <span class='list2'>{$vo.money}</span>
                     <span class='list3'>{$vo.start_time|date='Y-m-d',###}</span>
                     <span class='list4'>{$vo.end_time|date='Y-m-d',###}</span>
-                    <span class='list5 paper_color{$vo.status}'> 
+                    <span class='list5 <eq name="vo.status" value="5">red</eq>'> 
                    <switch name="vo.status">
                    		<case value="3">今日到期</case>
                    		<case value="4">还剩{$vo.expire_day}天</case>
@@ -64,7 +64,7 @@
                     <span class='list2'>{$vo.money}</span>
                     <span class='list3'>{$vo.start_time|date='Y-m-d',###}</span>
                     <span class='list4'>{$vo.end_time|date='Y-m-d',###}</span>
-                    <span class='list5 paper_color6'>
+                    <span class='list5 <neq name="vo.overdue_day" value="0">red</neq>'>
                     	 已还|<eq name="vo.overdue_day" value="0">未逾期<else/>逾期{$vo.overdue_day}天</eq>
                     </span>
                 </li>

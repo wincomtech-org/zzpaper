@@ -49,7 +49,8 @@
             	$('.error-tip').text(data.msg);
             	if(data.url!=''){
             	     location.href=data.url; 
-            	} 
+            	}
+            	 
             },
             error: function(xhr, type){
             	$('.error_tip').text('服务器连接失败'); 
