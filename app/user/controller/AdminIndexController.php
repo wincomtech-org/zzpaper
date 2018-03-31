@@ -77,7 +77,43 @@ class AdminIndexController extends AdminBaseController
         // 渲染模板输出
         return $this->fetch();
     }
-
+    /**
+     * 本站用户删除
+     * @adminMenu(
+     *     'name'   => '本站用户删除',
+     *     'parent' => 'index',
+     *     'display'=> false,
+     *     'hasView'=> false,
+     *     'order'  => 10000,
+     *     'icon'   => '',
+     *     'remark' => '本站用户删除',
+     *     'param'  => ''
+     * )
+     */
+    public function delete()
+    {
+        
+        $id = $this->request->param('id', 0, 'intval');
+        $count=Db::name('paper')->where('borrower_id',$id)->count();
+        if($count>0){
+            $this->error('该会员有借款借条未完成，不能删除');
+        }
+        $count=Db::name('paper')->where('lender_id',$id)->count();
+        if($count>0){
+            $this->error('该会员有出借借条未完成，不能删除');
+        }
+        if ($id) {
+            $result = Db::name("user")->where(["id" => $id, "user_type" => 2])->delete();
+            if ($result) {
+                $this->success("会员删除成功！");
+            } else {
+                $this->error('会员删除失败,会员不存在！');
+            }
+        } else {
+            $this->error('数据传入失败！');
+        }
+    }
+    
     /**
      * 本站用户拉黑
      * @adminMenu(
