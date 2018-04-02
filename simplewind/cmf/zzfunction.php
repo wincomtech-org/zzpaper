@@ -23,6 +23,17 @@ function zz_get_time0(){
     $day=date('Y-m-d',time());
     return strtotime($day);
 }
+/* 检测是否系统维护时间 */
+function zz_check_time(){ 
+    $time=time();
+    $day=strtotime(date('Y-m-d',$time));
+    $tmp=$time-$day;
+    if($tmp<600 || $tmp>86390){
+        return [1,'夜间0点到0点10分为系统维护时间，不能处理用户借条数据'];
+    }else{
+        return [0,'可以访问'];
+    }
+}
 /* 利率计算 */
 function zz_get_money($money,$rate,$days){
     $tmp1=bcmul($days*$rate,$money,2);
@@ -79,13 +90,13 @@ function zz_curl($url, $data = null)
 function zz_wxmsg($openid,$url0,$data,$type){
     $token=config('access_token');
     $url = 'https://api.weixin.qq.com/cgi-bin/message/template/send?access_token='.$token;
-    if($type=='msg_back'){
+    if($type=='msg_send'){
         $template_id=config($type);
         $json = '{
             "touser":"'.$openid.'",
             "template_id":"'.$template_id.'",
             "url":"'.$url0.'",
-            "topcolor":"#FF0000",
+            "topcolor":"#FF0000", 
             "data":{
                 "first": {
                 "value":"'.$data[0].'",
@@ -103,12 +114,9 @@ function zz_wxmsg($openid,$url0,$data,$type){
                 "value":"'.$data[3].'",
                 "color":"#173177"
                 },
-                "keyword4":{
-                "value":"'.$data[4].'",
-                "color":"#173177"
-                }, 
+              
                 "remark":{
-                "value":"'.$data[5].'",
+                "value":"'.$data[4].'",
                 "color":"#173177"
                 }
             }

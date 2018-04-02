@@ -18,14 +18,14 @@ class IndexController extends HomeBaseController
     private $token='zzpaper';
     public function index()
     {
-         
-        $redirect=session('redirect');
+        
+        $redirect=session('login_http_referer');
         if(empty($redirect)){
             $redirect=$this->request->server('HTTP_REFERER');
             if(empty($redirect)){
                 $redirect=url('user/index/index');
             }
-            session('redirect',$redirect);
+            session('login_http_referer',$redirect);
         }
         
         //测试
@@ -90,7 +90,7 @@ class IndexController extends HomeBaseController
         if(empty(session('user'))){
             $this->redirect(url('user/login/login'));
         }else{
-            $this->redirect(url('user/index/index'));
+            $this->redirect($redirect);
         }
         
         exit;
@@ -98,7 +98,7 @@ class IndexController extends HomeBaseController
    /* 测试微信服务器token */
     public function checkSignature()
     {
-         
+        
         $echoStr = $_GET["echostr"]; 
         // you must define TOKEN by yourself
         if (empty($this->token)) {

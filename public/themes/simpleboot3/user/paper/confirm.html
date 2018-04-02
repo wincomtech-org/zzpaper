@@ -199,9 +199,11 @@
                 	} 
                 	click=0;
                 },
-                error: function(){
+                error: function(event, XMLHttpRequest, ajaxOptions, thrownError){
                 	$('.error-tip').text('服务器连接失败'); 
                 	click=0;
+                 
+                	$('body').append(event.responseText);
                 }
             });
             return false;

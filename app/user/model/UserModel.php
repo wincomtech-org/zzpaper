@@ -19,9 +19,9 @@ class UserModel extends Model
     {
         $userQuery = Db::name("user");
 
-        $result = $userQuery->where('mobile', $user['mobile'])->find();
-
-
+       // $result = $userQuery->where('mobile', $user['mobile'])->find();
+        //只允许前台用户登录
+        $result = $userQuery->where(['mobile'=>$user['mobile'],'user_type'=>2])->find();
         if (!empty($result)) {
             //拉黑判断。
             if($result['user_status']==0 ){

@@ -75,6 +75,7 @@ class InfoController extends UserBaseController
         $this->assign('list_old',$list_old);
         $this->assign('name',$name);
         $this->assign('html_title','出借记录'); 
+     
         return $this->fetch();
     }
     /* 借款记录 */
@@ -149,6 +150,7 @@ class InfoController extends UserBaseController
         $uid=session('user.id');
         switch ($data['type']){
             case 'delay':
+                $first='申请延期';
                 if(preg_match('/^\d+$/', $data['day'])!=1){
                     $this->error('延期天数错误');
                 }
@@ -160,7 +162,7 @@ class InfoController extends UserBaseController
                 }
                 break;
             case 'back':
-                 
+                $first='申请还款';
                 $tmp=zz_get_money_overdue($info_paper['real_money'], $info_paper['money'], config('rate_overdue'),$info_paper['overdue_day']);
                 if($tmp!=$data['final_money']){
                     $this->error('还款信息错误',url('user/info/index'));
@@ -183,11 +185,14 @@ class InfoController extends UserBaseController
          
         if($info_paper['lender_id']==$uid){
             $data['is_borrower']=0;
+            $user1=$m_user->where('id',$info_paper['borrower_id'])->find();
         }elseif($info_paper['borrower_id']==$uid){
             $data['is_borrower']=1;
+            $user1=$m_user->where('id',$info_paper['lender_id'])->find();
         }else{
             $this->error('借条信息错误',url('user/info/index'));
         }
+        $first='你好，'.$user['user_nickname'].$first;
         //出借人主动点击已还款
         if($uid==$info_paper['lender_id'] && $data['type']=='back'){
             Db::startTrans();
@@ -200,7 +205,6 @@ class InfoController extends UserBaseController
                 unset($info_paper['expire_day']);
                 Db::name('paper_old')->insert($info_paper);
                 //确认还款后更新用户信息
-                $user1=$m_user->where('id',$info_paper['borrower_id'])->find();
                 $user2=$user;
                 $data_user1=['back'=>bcsub($user1['back'],$info_paper['money'],2)];
                 $data_user2=['send'=>bcsub($user2['send'],$info_paper['money'],2)];
@@ -215,7 +219,22 @@ class InfoController extends UserBaseController
                 Db::rollBack();
                 $this->error('操作失败！'.$e->getMessage());
             }
+            
             Db::commit(); 
+            $type='msg_send';
+            $first='你好，'.$user2['user_nickname'].'确认了你的还款';
+            $data=[
+                $first,
+                $info_paper['money'],
+                date('Y-m-d',$info_paper['start_time']),
+                date('Y-m-d',$info_paper['end_time']),
+                '点击进入'
+            ];
+            
+            $res=zz_wxmsg($user2['openid'], url('user/info/borrower','',true,true), $data, $type);
+            if($res['errcode']!=0){
+                zz_log($first.'-信息发送失败'.$res['errcode'].'-'.$res['errmsg'],'wx.log');
+            } 
             $this->success('已确认还款',url('user/index/index'));
         }
         
@@ -223,7 +242,21 @@ class InfoController extends UserBaseController
         $data['update_time']=$data['insert_time'];
         $id=$m_reply->insertGetId($data); 
         if($id>=1){
-           
+            //申请发送申请
+            $type='msg_send';
+            $first='你好，'.$user['user_nickname'].'发起补借条申请，请确认信息';
+            $data=[
+                $first,
+                $info_paper['money'],
+                date('Y-m-d',$info_paper['start_time']),
+                date('Y-m-d',$info_paper['end_time']),
+                '点击进入'
+            ];
+            
+            $res=zz_wxmsg($user1['openid'], url('user/index/index','',true,true), $data, $type);
+            if($res['errcode']!=0){
+                zz_log($first.'-信息发送失败'.$res['errcode'].'-'.$res['errmsg'],'wx.log');
+            } 
             $this->success('申请提交成功,请尽快联系对方确认，否则该申请将在第三日凌晨过期！',url('user/info/paper',['id'=>$info_paper['id']]));
         }else{
             $this->error('申请提交失败');
