@@ -105,20 +105,40 @@ class InfoController extends UserBaseController
     public function paper(){
         $id=$this->request->param('id',0,'intval');
         $where_paper=['id'=>['eq',$id]];
+        $where_paper['status']=['in',[3,4,5]];
+        $paper=Db::name('paper')->where($where_paper)->find();
+        if(empty($paper)){
+            $this->redirect(url('paper_old',['id'=>$id]));
+        }
+        $statuss=config('paper_status');
+        $paper['status_name']=$statuss[$paper['status']];
+        //未完成的计算最终还款金额
+        $paper['final_money']=zz_get_money_overdue($paper['real_money'],$paper['money'],config('rate_overdue'),$paper['overdue_day']);
+       
+        $replys=Db::name('reply')->where('oid',$paper['oid'])->order('id desc')->column('');
+        $uid=session('user.id');
+        //如果是借款人操作则back==0
+        $paper['back']=0;
+        if($paper['lender_id']==$uid){
+            $paper['back']=1;
+        }
+        $this->assign('paper',$paper);
+        $this->assign('replys',$replys);
+        $this->assign('reply_status',config('reply_status'));
+        $this->assign('reply_types',config('reply_types'));
+        $this->assign('html_title','借条详情');
+        return $this->fetch();
+        
+    }
+    /* 借款详情 */
+    public function paper_old(){
+        $id=$this->request->param('id',0,'intval');
+        $where_paper=['id'=>['eq',$id]];
         $paper=Db::name('paper_old')->where($where_paper)->find();
         if(empty($paper)){
-            $where_paper['status']=['in',[3,4,5]];
-            $paper=Db::name('paper')->where($where_paper)->find();
-            if(empty($paper)){
-                $this->error('此借条不存在');
-            }
-            $statuss=config('paper_status');
-            $paper['status_name']=$statuss[$paper['status']];
-            //未完成的计算最终还款金额
-            $paper['final_money']=zz_get_money_overdue($paper['real_money'],$paper['money'],config('rate_overdue'),$paper['overdue_day']);
-            
+            $this->error('借条错误，请刷新'); 
         }else{
-            $paper['status_name']='已还款结束'; 
+            $paper['status_name']='已还款结束';
         }
         $replys=Db::name('reply')->where('oid',$paper['oid'])->order('id desc')->column('');
         $uid=session('user.id');
@@ -264,8 +284,8 @@ class InfoController extends UserBaseController
     }
     /* 借款协议 */
     public function protocol(){
-        $id=$this->request->param('id',0,'intval');
-        $where_paper=['id'=>['eq',$id]];
+        $oid=$this->request->param('oid');
+        $where_paper=['oid'=>['eq',$oid]];
         $paper=Db::name('paper_old')->where($where_paper)->find();
         if(empty($paper)){
             $where_paper['status']=['in',[3,4,5]];
