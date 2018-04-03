@@ -263,8 +263,7 @@ class InfoController extends UserBaseController
         $id=$m_reply->insertGetId($data); 
         if($id>=1){
             //申请发送申请
-            $type='msg_send';
-            $first='你好，'.$user['user_nickname'].'发起补借条申请，请确认信息';
+            $type='msg_send'; 
             $data=[
                 $first,
                 $info_paper['money'],
