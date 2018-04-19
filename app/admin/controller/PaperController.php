@@ -171,12 +171,7 @@ class PaperController extends AdminBaseController
                     $m_user->where('id',$user1['id'])->update($data_user1);
                     $m_user->where('id',$user2['id'])->update($data_user2);
                     break;
-               /*  case '1':
-                    $row=$m->where($where)->update(['status'=>$data['status'],'update_time'=>$data['update_time']]);
-                    if($row!=1){
-                        throw new \Exception('更新失败');
-                    } 
-                    break; */
+               
                 default :throw new \Exception('目前只能修改为已还款');break;
            } 
            Db::commit();

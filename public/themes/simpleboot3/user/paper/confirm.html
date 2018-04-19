@@ -71,21 +71,15 @@
               	 
               	 <li class=" padding-all">
                     <ol class='second-li clearfix'>
-                        <li class='gray'>
-                           	申请延期
-                        </li>
-                        <li class='tet-right gray'>
-                           {$info_reply.day}天
-                        </li>
+                        
+                         <li class='gray'>
+                                	延期还款日
+                            </li>
+                            <li class='tet-right gray'>
+                                 {$info_reply.day|date='Y-m-d',###}
+                            </li>
                     </ol>
-                     <ol class='second-li clearfix'>
-                        <li class='gray'>
-                           	新利率
-                        </li>
-                        <li class='tet-right gray'>
-                           {$info_reply.rate}%
-                        </li>
-                    </ol>
+                     
                 </li>
               </case>
               <case value="back">
@@ -159,18 +153,20 @@
     <script>
     var click=0;
         $('.sure_alert').click(function(){ 
+        	click=0;
             $('#zzop').val('1');
             $('.promit-html').text('你确定要同意吗');
             $('.pop_up').show();
         });
         $('.cancal_alert').click(function(){
+        	click=0;
         	$('#zzop').val('0');
             $('.promit-html').text('你确定要驳回吗');
             $('.pop_up').show();
         });
         // 输入密码，确定
         $('.sure-btn-2').click(function(){
-        	
+        	 
             var psw=$.trim($('.promit-input').val());
             var id=$('#zzid').val();
             var op=$('#zzop').val();
@@ -199,11 +195,9 @@
                 	} 
                 	click=0;
                 },
-                error: function(event, XMLHttpRequest, ajaxOptions, thrownError){
-                	$('.error-tip').text('服务器连接失败'); 
+                error: function(event, XMLHttpRequest, ajaxOptions, thrownError){ 
                 	click=0;
-                 
-                	$('body').append(event.responseText);
+                   msg('服务器连接失败',event.responseText); 
                 }
             });
             return false;

@@ -297,7 +297,7 @@ class PaperController extends UserBaseController
         if($tmp[0]===1){
             $this->error($tmp[1]);
         }
-        $data=$this->request->param('');
+        $data=$this->request->param();
         $m_reply=Db::name('reply');
         $m_paper=Db::name('paper'); 
         $where_reply=['id'=>$data['id'],'status'=>0,'is_overtime'=>0];
@@ -385,24 +385,30 @@ class PaperController extends UserBaseController
                    
                     break;
                 case 'delay':
-                    
-                    $data_paper['rate']=$info_reply['rate']; 
-                    $data_paper['end_time']=$info_paper['end_time']+$info_reply['day']*86400;
-                    $data_paper['real_money']=1;
-                    //预期天数归0，计算到期天数
+                     
+                    //根据延期日期和利率重新计算
+                    $data_paper['rate']=$info_reply['rate'];
+                    $data_paper['end_time']=$info_reply['day'];
+                    if($data_paper['end_time']<=$info_paper['end_time']){
+                        $this->error('延期日期无效');
+                    }
+                    //逾期先归0，再计算到期时间和状态
                     $data_paper['overdue_day']=0;
+                   
                     $data_paper['expire_day']=bcdiv(($data_paper['end_time']-strtotime(date('Y-m-d'))),86400,0);
+                    
                     if($data_paper['expire_day']>=1){
-                        $data_paper['status']=4; 
+                        $data_paper['status']=4;
                     }elseif($data['expire_day']==0){
-                        $data_paper['status']=3; 
+                        $data_paper['status']=3;
                     }else{
                         $data_paper['status']=5;
-                        $data_paper['overdue_day']=0-$data['expire_day'];
+                        $data_paper['overdue_day']=0-$data_paper['expire_day'];
                     }
-                    //计算利息
-                    $days=bcdiv(($data_paper['end_time']-$info_paper['end_time']),86400,0);
+                    //计算新的到期利息
+                    $days=bcdiv(($data_paper['end_time']-$info_paper['start_time']),86400,0);
                     $data_paper['real_money']=zz_get_money($info_paper['money'],$data_paper['rate'],$days);
+                   
                      break;
                 case 'back':
                     

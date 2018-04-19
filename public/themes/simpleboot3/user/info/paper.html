@@ -78,11 +78,12 @@
                		<case value="delay">
                		 <li class=" padding-all box-li-supplement" style="display:none;">
                         <ol class='second-li clearfix'>
-                            <li class='gray'>
-                                	申请延期
+                           
+                             <li class='gray'>
+                                	延期还款日
                             </li>
                             <li class='tet-right gray'>
-                                 {$vo.day}天
+                                 {$vo.day|date='Y-m-d',###}
                             </li>
                         </ol> 
                         <ol class='second-li clearfix'>
@@ -141,9 +142,8 @@
         <!--延期 -->
         <div class="pop_up pop_up3 border-radius-10 pop_up_inputs" style='display:none;'>
             <p class="error-tip red">提示</p>
-            <p class='promit-p'><span>延期天数</span><input type="number" name='delay_date' placeholder='延期天数'  min="0" value='0' class='promit-input tet-right'></p>
-            <p class='promit-p'><span>年转化率</span><input type="number" name='annual_conversion_rate' min="0" max="{$Think.config.rate_overdue}" value='0' placeholder='请输入年转化率' class='tet-right promit-input'><b>%</b></p>
-            <p class='promit-p'><span>密码</span><input type="password" name='password' value='' placeholder='请输入6位数密码' class='tet-right promit-input'></p>
+            <p class='promit-p'><span>延期还款日</span><input type="text" name='delay_date' id="delay_date" class='promit-input tet-right' readonly/></p>
+             <p class='promit-p'><span>密码</span><input type="password" name='password' value='' placeholder='请输入6位数密码' class='tet-right promit-input'></p>
             <ul class="pop_up_ul">
                 <li><a href="javascript:psw_hide();" class='blue-text'>取消</a></li>
                 <li><a href="javascript:void(0);" class='blue-text delay-btn '>确定</a></li>
@@ -152,8 +152,35 @@
     </section>
 
        <include file="public@foot" />  
-       
+        <script type="text/javascript" src="__TMPL__/public/assets/js/laydate/laydate.js"></script>
     <script>
+	  //获取当前时间，格式YYYY-MM-DD
+	  var min_day=GetDateStr(1,"{$paper.end_time|date='Y-m-d',###}"); 
+	  $('#delay_date').val(min_day);
+	  laydate.render({
+	            elem: '#delay_date',
+	            value:min_day, 
+	            istoday: false,
+	            min: min_day, 
+	        });
+	    function GetDateStr(AddDayCount=0,day0=''){ 
+		  	if(day0==''){
+		  		 var dd = new Date();
+		  	}else{
+		  		 var dd = new Date(day0);
+		  		 
+		  	} 
+	        dd.setDate(dd.getDate()+AddDayCount);//获取AddDayCount天后的日期
+		 
+	        var y = dd.getFullYear();
+	
+	        var m = dd.getMonth() +1;//获取当前月份的日期
+	        var d = dd.getDate();
+	
+	        return y+"-"+m+"-"+d;
+	
+	    }       
+	    var click=0;
     	var oid="{$paper.oid}";
     	var back="{$paper.back}";
     	var final_money="{$paper.final_money}"; 
@@ -164,12 +191,13 @@
         	 }else{
         		 $('.pop_up1 .promit-html').text('你确定对方已还款吗？对方应还'+{$paper.final_money}+'元');
         	 }
-        	 
+        	 click=0;
             $('.pop_up').hide();
             $('.pop_up1').show();
         });
  
         $('.delay-alert').click(function(){
+        	click=0;
         	$('.error-tip').text('提示');
             $('.pop_up').hide();
             $('.pop_up3').show();
@@ -177,9 +205,12 @@
 
         // 输入密码，确定
         $('.sure-btn-2').click(function(){
-        	if($('.error-tip').text()=='正在提交，请勿重复操作!'){
-        		return false;
-        	}
+        	 
+        	if(click==0){
+       		 	click=1;
+	       	 }else{
+	       		 return false;
+	       	 }
             $('.error-tip').text('正在提交，请勿重复操作!');
            
             var psw=$.trim($('.pop_up1 .promit-input').val());
@@ -195,6 +226,11 @@
                  data:{'oid':oid,'psw':psw,'final_money':final_money,'type':'back'},
                  success: function(data){ 
                  	$('.error-tip').text(data.msg);
+                 	if(data.code==1){
+                 		click=1;
+                 	}else{
+                 		click=0;
+                 	}
                  	if(data.url!=''){
                  		if(back=='1' && data.code==1){
                  			location.href=data.url; 
@@ -205,9 +241,8 @@
 	                   	 } 
                  	} 
                  },
-                 error: function(xhr, type){
-                 	$('.error-tip').text('服务器连接失败'); 
-                 	 
+                 error: function(event, XMLHttpRequest, ajaxOptions, thrownError){ 
+                  	 msg('服务器连接失败',event.responseText); 
                  }
              });
     		 return false;
@@ -216,21 +251,16 @@
 
         // 延期
         $('.delay-btn').click(function(){
-        	if($('.error-tip').text()=='正在提交，请勿重复操作!'){
-        		return false;
-        	}
+        	if(click==0){
+       		 	click=1;
+	       	 }else{
+	       		 return false;
+	       	 }
         	 $('.error-tip').text('正在提交，请勿重复操作!');
-            var rate=$.trim($('.pop_up3 input[name="annual_conversion_rate"]').val());
+           
             var day=$.trim($('.pop_up3  input[name="delay_date"]').val());
             var psw=$.trim($('.pop_up3  input[name="password"]').val());
-            if(!(/^\d{1,2}$/.test(rate))){
-            	 $('.error-tip').text('利率只能为0-100的整数');
-    			 return false;
-            }
-            if(!(/^\d+$/.test(day))){
-           	 $('.error-tip').text('延期天数只能为整数');
-   			 return false;
-           	}
+           
     		 if(!isPassword(psw)){
     			 $('.error-tip').text('请输入6位数字密码');
     			 return false;
@@ -239,8 +269,13 @@
                  type: 'POST',
                  url: "{:url('user/info/ajax_reply')}",
                  dataType: 'json',
-                 data:{'oid':oid,'psw':psw,'rate':rate,'day':day,'type':'delay'},
+                 data:{'oid':oid,'psw':psw,'day':day,'type':'delay'},
                  success: function(data){
+                	 if(data.code==1){
+                  		click=1;
+                  	}else{
+                  		click=0;
+                  	}
                  	$('.error-tip').text(data.msg);
                  	if(data.url!=''){
                  		setTimeout(function(){
@@ -249,9 +284,12 @@
                  	}
                  	 
                  },
-                 error: function(xhr, type){
-                 	$('.error-tip').text('服务器连接失败'); 
+                 
+                 error: function(event, XMLHttpRequest, ajaxOptions, thrownError){
                  	 
+                 	click=0;
+                 	 msg('服务器连接失败',event.responseText);
+                  
                  }
              });
     		 return false;

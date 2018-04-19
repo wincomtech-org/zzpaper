@@ -72,20 +72,13 @@
                		 <li class=" padding-all box-li-supplement" style="display:none;">
                         <ol class='second-li clearfix'>
                             <li class='gray'>
-                                	申请延期
+                                	延期还款日
                             </li>
                             <li class='tet-right gray'>
-                                 {$vo.day}天
+                                 {$vo.day|date='Y-m-d',###}
                             </li>
                         </ol> 
-                        <ol class='second-li clearfix'>
-                        <li class='gray'>
-                           	新利率
-                        </li>
-                        <li class='tet-right gray'>
-                           {$vo.rate}%
-                        </li>
-                    </ol>
+                        
                     </li>
                		</case>
                		<case value="back">

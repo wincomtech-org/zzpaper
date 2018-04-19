@@ -171,15 +171,19 @@ class InfoController extends UserBaseController
         switch ($data['type']){
             case 'delay':
                 $first='申请延期';
-                if(preg_match('/^\d+$/', $data['day'])!=1){
-                    $this->error('延期天数错误');
+               //处理延期期限，确保没问题,最少延期1天
+                $data['day']=strtotime(date('Y-m-d',strtotime($data['day'])));
+                if($data['day']<=($info_paper['end_time']+86399)){
+                    $this->error('延期时间选择错误');
                 }
-                if(preg_match('/^\d{1,2}$/', $data['rate'])!=1){
+                //延期默认为原利率
+                $data['rate']=$info_paper['rate'];
+                /* if(preg_match('/^\d{1,2}$/', $data['rate'])!=1){
                     $this->error('新利率错误');
                 }
                 if(!in_array($data['rate'], config('rate'))){
                     $this->error('利率不支持，请参考补借页面的利率');
-                }
+                } */
                 break;
             case 'back':
                 $first='申请还款';
