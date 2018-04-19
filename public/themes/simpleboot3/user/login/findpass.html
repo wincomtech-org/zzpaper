@@ -71,13 +71,13 @@ function send_msg(tel,code){
         dataType: 'json',
         data:{'tel':tel,'type':'find','pic':code},
         success: function(data){
+        	$('.captcha').attr('src',$('.captcha').attr('src')+'1');
         	if(data.msg=='success'){
         		$('.btn-small').hide();
         		$('.backg-gray').show();
         		sms_msg();
         	}else{
-        		$('.error-tip').text(data.msg); 
-        		$('.captcha').attr('src',$('.captcha').attr('src')+'1');
+        		$('.error-tip').text(data.msg);  
         	} 
         },
         error: function(){
