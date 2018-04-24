@@ -54,11 +54,11 @@
                                 </dl>
                             </div>
                             <ol class="ul_2nd">
-                                <li><a href="{:url('user/info/paper',['id'=>$vo.id])}">查看详情</a></li>
+                                <li><a href="{:url('user/info/paper',['oid'=>$vo.oid])}">查看详情</a></li>
                                 <li><a href="{:url('user/info/protocol',['oid'=>$vo.oid])}">查看协议</a></li>
                             </ol>
                         </li>
-                     </foreach>  
+                     </foreach>  o
                       <foreach name="list_old" item="vo">  
                         <li>
                             <div class='search_con_ul_div'>
@@ -71,7 +71,7 @@
                                 </dl>
                             </div>
                             <ol class="ul_2nd">
-                                <li><a href="{:url('user/info/paper',['id'=>$vo.id])}">查看详情</a></li>
+                                <li><a href="{:url('user/info/paper_old',['oid'=>$vo.oid])}">查看详情</a></li>
                                 <li><a href="{:url('user/info/protocol',['oid'=>$vo.oid])}">查看协议</a></li>
                             </ol>
                         </li>

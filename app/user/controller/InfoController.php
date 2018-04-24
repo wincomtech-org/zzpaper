@@ -103,12 +103,12 @@ class InfoController extends UserBaseController
     }
     /* 借款详情 */
     public function paper(){
-        $id=$this->request->param('id',0,'intval');
-        $where_paper=['id'=>['eq',$id]];
+        $oid=$this->request->param('oid');
+        $where_paper=['oid'=>['eq',$oid]];
         $where_paper['status']=['in',[3,4,5]];
         $paper=Db::name('paper')->where($where_paper)->find();
         if(empty($paper)){
-            $this->redirect(url('paper_old',['id'=>$id]));
+            $this->redirect(url('paper_old',['oid'=>$oid]));
         }
         $statuss=config('paper_status');
         $paper['status_name']=$statuss[$paper['status']];
@@ -117,10 +117,13 @@ class InfoController extends UserBaseController
        
         $replys=Db::name('reply')->where('oid',$paper['oid'])->order('id desc')->column('');
         $uid=session('user.id');
-        //如果是借款人操作则back==0
-        $paper['back']=0;
+        //如果是借款人操作则back==0 
         if($paper['lender_id']==$uid){
             $paper['back']=1;
+        }elseif($paper['borrower_id']==$uid){
+            $paper['back']=0;
+        }else{
+            $this->error('数据错误');
         }
         $this->assign('paper',$paper);
         $this->assign('replys',$replys);
@@ -132,8 +135,8 @@ class InfoController extends UserBaseController
     }
     /* 借款详情 */
     public function paper_old(){
-        $id=$this->request->param('id',0,'intval');
-        $where_paper=['id'=>['eq',$id]];
+        $oid=$this->request->param('oid');
+        $where_paper=['oid'=>['eq',$oid]];
         $paper=Db::name('paper_old')->where($where_paper)->find();
         if(empty($paper)){
             $this->error('借条错误，请刷新'); 
@@ -142,10 +145,13 @@ class InfoController extends UserBaseController
         }
         $replys=Db::name('reply')->where('oid',$paper['oid'])->order('id desc')->column('');
         $uid=session('user.id');
-        //如果是借款人操作则back==0
-        $paper['back']=0;
+        //如果是借款人操作则back==0 
         if($paper['lender_id']==$uid){
             $paper['back']=1;
+        }elseif($paper['borrower_id']==$uid){
+            $paper['back']=0;
+        }else{
+            $this->error('数据错误');
         }
         $this->assign('paper',$paper);
         $this->assign('replys',$replys);
