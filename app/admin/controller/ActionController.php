@@ -15,7 +15,7 @@ class ActionController extends AdminBaseController
     {
         parent::_initialize();
         $this->m=Db::name('action');
-        $this->order='id desc';
+        $this->order='time desc';
        
         $this->assign('flag','管理员操作记录');
         

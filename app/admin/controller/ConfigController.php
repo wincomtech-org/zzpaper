@@ -7,8 +7,7 @@ use cmf\controller\AdminBaseController;
  
 use think\Db;
 
- 
- 
+  
 class ConfigController extends AdminBaseController
 {
     
@@ -18,14 +17,15 @@ class ConfigController extends AdminBaseController
         
     }
      
+    
     /**
-     * 网站配置
+     *  网站配置
      * @adminMenu(
      *     'name'   => '网站配置',
-     *     'parent' => '',
+     *     'parent' => 'admin/Setting/default',
      *     'display'=> true,
      *     'hasView'=> true,
-     *     'order'  => 15,
+     *     'order'  => 0,
      *     'icon'   => '',
      *     'remark' => '网站配置',
      *     'param'  => ''

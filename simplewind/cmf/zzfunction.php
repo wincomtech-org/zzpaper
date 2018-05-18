@@ -88,6 +88,9 @@ function zz_curl($url, $data = null)
     return json_decode($output, true);
 }
 function zz_wxmsg($openid,$url0,$data,$type){
+    if(empty($openid)){
+        return ['errorcode'=>1,'errmsg'=>'openid为空','msgid'=>0]; 
+    }
     $token=config('access_token');
     $url = 'https://api.weixin.qq.com/cgi-bin/message/template/send?access_token='.$token;
     if($type=='msg_send'){

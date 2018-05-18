@@ -42,6 +42,7 @@ class LoginController extends HomeBaseController
      */
     public function login()
     {
+        
         $this->assign('html_title','登录');
        return $this->fetch();
         

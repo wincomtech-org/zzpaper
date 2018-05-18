@@ -38,13 +38,21 @@ class UserModel extends Model
             ];
             hook_one("user_login_start",$hookParam);
             if ($comparePasswordResult) {
-                 
-                session('user', $result);
                 $data = [
                     'login_fail'=>0,
                     'last_login_time' => time(),
                     'last_login_ip'   => get_client_ip(0, true),
                 ];
+                if(empty($result['openid']) ){
+                    $openid=session('wx.openid');
+                    if(!empty($openid)){
+                        $data['openid']=$openid;
+                        $result['openid']=$openid;
+                    }
+                    
+                 }
+                session('user', $result);
+                
                 $userQuery->where('id', $result["id"])->update($data);
                 return 0;
             } 

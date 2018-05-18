@@ -37,10 +37,12 @@ class RegisterController extends HomeBaseController
      */
     public function register()
     {
+      
         if(empty(session('wx.openid'))){
             
             $this->error('请通过微信公众号注册',url('portal/index/index'));
         }
+        
         $this->assign('html_title','注册');
        return $this->fetch();
          
