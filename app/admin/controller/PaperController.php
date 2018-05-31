@@ -74,7 +74,7 @@ class PaperController extends AdminBaseController
         $list= $m->where($where)->order($this->order)->paginate(10);
        
         // 获取分页显示
-        $page = $list->render(); 
+        $page = $list->appends($data)->render(); 
        //得到所有管理员
        
         $this->assign('page',$page);
