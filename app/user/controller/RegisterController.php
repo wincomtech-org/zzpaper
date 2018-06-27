@@ -38,12 +38,9 @@ class RegisterController extends HomeBaseController
     public function register()
     {
       
-        if(empty(session('wx.openid'))){ 
+        if(empty(session('wx.openid'))){
+            
             $this->error('请通过微信公众号注册',url('portal/index/index'));
-        }
-        if(empty(session('wx.language'))){
-            exit('微信注册信息获取失败，请退出重试');
-           
         }
         
         $this->assign('html_title','注册');
@@ -91,7 +88,7 @@ class RegisterController extends HomeBaseController
         }
         $msg=new Msg();
          
-        $this->error($msg->reg($phone,rand(100000,999999)));
+        $this->error($msg->reg($phone));
     }
     /**
      * 发送验证码，要验证图片验证码
@@ -115,7 +112,7 @@ class RegisterController extends HomeBaseController
             }
         } 
         $msg=new Msg(); 
-        $this->error($msg->reg($phone,rand(100000,999999)));
+        $this->error($msg->reg($phone));
     }
     
     /**
@@ -178,12 +175,9 @@ class RegisterController extends HomeBaseController
             $result = $this->validate($data, 'User');
             if ($result !== true) {
                 $this->error($result);
-            }
-           //保存微信头像为本地
-            $wx=session('wx');
-            try {
-                
-           
+            } else {
+               //保存微信头像为本地
+                $wx=session('wx');
                 //定义头像名,有微信头像就获取，没有就指定默认
                 $data['avatar']='avatar/'.md5($data['user_login']).'.jpg';
                 //$imgSrc='http://wx.qlogo.cn/mmopen/vi_32/NtItl7iciafpn9B8zHC4Zhy0hsvYCvibbSeTlQpkDH44Il4RRZ4kwQ36l1PZ2DkMiaU0xibD3OeJxOLS6IY8u1pNTrQ/132';
@@ -205,7 +199,6 @@ class RegisterController extends HomeBaseController
                 ];
                 
                 $data['more']=json_encode($wx0);
-                
                 $result             = Db::name('user')->insertGetId($data);
                 if ($result !== false) {
                     $data   = Db::name("user")->where('id', $result)->find();
@@ -213,11 +206,8 @@ class RegisterController extends HomeBaseController
                     session('wx',null);
                     $this->success("注册成功！");
                 } else {
-                    throw new \Exception('用户信息添加失败！');
-                    
+                    $this->error("注册失败！");
                 }
-            } catch (\Exception $e) {
-                $this->error('注册失败！'.$e->getMessage());
             }
              
        

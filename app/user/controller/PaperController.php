@@ -38,20 +38,28 @@ class PaperController extends UserBaseController
             return $this->fetch();
         }
         $this->assign('idcard',$idcard); 
+        $codes=$this->request->param('codes','','trim');
+        if(strlen($codes)!=4){
+            $this->assign('error','短信验证码错误');
+            return $this->fetch();
+        } 
         $info=Db::name('user')->where(['user_login'=>$idcard,'user_type'=>2])->find();
         if(empty($info)){
             $this->assign('error','没有此用户');
             return $this->fetch(); 
         }
-       
-        $list1=Db::name('paper')
-        ->where(['borrower_idcard'=>['eq',$idcard],'status'=>['in',[3,4,5]]])
-        ->order('status asc,expire_day asc,overdue_day asc')
-        ->column(''); 
-        $list2=Db::name('paper_old')
-        ->where(['borrower_idcard'=>$idcard])
-        ->order('overdue_day asc')
-        ->column(''); 
+       //未还借款
+        $list1=Db::name('paper')->alias('p')
+        ->join('cmf_user u','u.id=p.lender_id')
+        ->where(['p.borrower_idcard'=>['eq',$idcard],'p.status'=>['in',[3,4,5]]])
+        ->order('p.status asc,p.expire_day asc,p.overdue_day asc,p.id desc')
+        ->column('p.*,u.user_nickname as lname,u.avatar as lavatar'); 
+        //已还借款
+        $list2=Db::name('paper_old')->alias('p')
+        ->join('cmf_user u','u.id=p.lender_id')
+        ->where(['p.borrower_idcard'=>$idcard])
+        ->order('p.overdue_day asc,p.id desc')
+        ->column('p.*,u.user_nickname as lname,u.avatar as lavatar'); 
         
         $this->assign('info',$info); 
         $this->assign('list1',$list1); 
@@ -59,6 +67,49 @@ class PaperController extends UserBaseController
         $this->assign('paper_status',config('paper_status')); 
         return $this->fetch('search_info');
       
+    }
+    /**
+     *负债查询
+     */
+    public function search_paper()
+    {
+        $this->assign('html_title','负债查询');
+         
+        $oid=$this->request->param('oid','');
+        $m_paper=Db::name('paper');
+        $info=$m_paper->where(['oid'=>$oid])->find();
+        
+        $uid=session('user.id');
+        if(empty($info)){
+           $this->error('非法访问');
+        }
+        
+        $codes=$this->request->param('codes','','trim');
+        $idcard=8;
+        $info=Db::name('user')->where(['user_login'=>$idcard,'user_type'=>2])->find();
+        if(empty($info)){
+            $this->assign('error','没有此用户');
+            return $this->fetch();
+        }
+        //未还借款
+        $list1=Db::name('paper')->alias('p')
+        ->join('cmf_user u','u.id=p.lender_id')
+        ->where(['p.borrower_idcard'=>['eq',$idcard],'p.status'=>['in',[3,4,5]]])
+        ->order('p.status asc,p.expire_day asc,p.overdue_day asc,p.id desc')
+        ->column('p.*,u.user_nickname as lname,u.avatar as lavatar');
+        //已还借款
+        $list2=Db::name('paper_old')->alias('p')
+        ->join('cmf_user u','u.id=p.lender_id')
+        ->where(['p.borrower_idcard'=>$idcard])
+        ->order('p.overdue_day asc,p.id desc')
+        ->column('p.*,u.user_nickname as lname,u.avatar as lavatar');
+        
+        $this->assign('info',$info);
+        $this->assign('list1',$list1);
+        $this->assign('list2',$list2);
+        $this->assign('paper_status',config('paper_status'));
+        return $this->fetch('search_info');
+        
     }
     
      
@@ -278,16 +329,32 @@ class PaperController extends UserBaseController
         $info_reply['send_type']=0;
         $send_type=0;
         
-         //补借条时对方id
-        if(($info_reply['is_borrower']==1 && $info_paper['lender_id']==$user['id']) || ($info_reply['is_borrower']==0 && $info_paper['borrower_id']==$user['id'])){
-            $info_reply['send_type']=1;
+         
+        //补借条时对方id
+        if($info_paper['lender_id']==$user['id']){
+            $tmp_uid=$info_paper['borrower_id'];
+            if($info_reply['is_borrower']==1){
+                $info_reply['send_type']=1;
+            }
+        }elseif($info_paper['borrower_id']==$user['id']){
+            $tmp_uid=$info_paper['lender_id'];
+            if($info_reply['is_borrower']==0){
+                $info_reply['send_type']=1;
+            }
+        }else{
+            $this->error('借条错误');
         }
+        $tmp_user=Db::name('user')->where('id='.$tmp_uid)->find();
+        
+        $info_reply['name']=$tmp_user['user_nickname'];
+        $info_reply['avatar']=$tmp_user['avatar'];
         $statuss=config('paper_status');
         $info_paper['status_name']=$statuss[$info_paper['status']];
         $this->assign('info_reply',$info_reply);
         $this->assign('info_paper',$info_paper);
         $this->assign('send_type',$send_type);
         $this->assign('html_title','申请详情');
+        
         return $this->fetch();
     }
     
