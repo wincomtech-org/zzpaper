@@ -1,10 +1,9 @@
 
 // 导航
 $('.show_position').click(function(e){
-
-$('.show_posi').toggle();
-    e.stopPropagation();
-})
+    $('.show_posi').toggle();
+        e.stopPropagation();
+});
 
 $(document).on('click',function(){
     closeposition();
@@ -211,7 +210,12 @@ $(function(){
                 
                 return false;
             }
-        })
+        });
+
+
+        $(".search_con_ulLi").on("click", function () {
+            $(this).toggleClass("on");
+        });
 })
 
 

@@ -43,7 +43,7 @@ $('#zzlogin').submit(function(){
  $.post("{:url('user/login/ajaxLogin')}",
 		 {'password':password,'captcha':verify,'tel':tel},
 		 function(data){
-			console.log(data); 
+		 
 		  	 if(data.code==1){
 				//返回上一页并刷新
 				self.location="{:url('user/index/index')}";

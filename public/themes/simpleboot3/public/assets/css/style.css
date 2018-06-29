@@ -69,6 +69,15 @@
     width:-ms-calc(100% - 6.5rem);
     width:-o-calc(100% - 6.5rem);
     width:calc(100% - 6.5rem);
+    position: relative;
+}
+.box-conCode{
+    width:-webkit-calc(100% - 6.5rem);
+    width:-moz-calc(100% - 6.5rem);
+    width:-ms-calc(100% - 6.5rem);
+    width:-o-calc(100% - 6.5rem);
+    width:calc(100% - 6.5rem);
+    position: relative;
 }
 .box-con-relative .box-con{
     position:relative;
@@ -96,10 +105,13 @@
     height:40px;
 }
 
+.box-right>.box-li{
+    height: 34px;
+    line-height: 34px;
+}
 .box-li,.group-person-mess li,.guide li{
     height:40px;
     line-height:40px;
-    border-bottom:1px solid #ddd;
 }
 
 .btn-big button,.btn-middle button{
@@ -261,6 +273,7 @@
     text-align:center;
     position:relative;
 }
+
 .nav-fixed dt{
     margin-bottom:3px;
 }
@@ -269,20 +282,21 @@
     margin:5px 0;
 }
 
-.show_posi{
+.show_posi{  
     position:absolute;
     top:-69px;
-    left:10%;
+    left:0;
+    right: 0;
     background-color:#fff;
-    padding:.1rem 1rem;
     border:1px solid #d00000;
     box-shadow:0px 1px 14px #777;
+    text-align: center;
 }
 .show_posi b{
     display:block;
     position:absolute;
     bottom:0;
-    left:33px;
+    left:46%;
 }
 .show_posi b:before{
     content: "";
@@ -292,7 +306,7 @@
     border-right: 9px solid transparent;
     position: absolute;
     top: 0;
-    left: 0;
+    left: ;
 }
 .show_posi b:after{
     content: "";
@@ -302,12 +316,22 @@
     border-right: 7px solid transparent;
     position: absolute;
     top: 0px;
-    left: 2px;
+    left: 0;
+    
 }
 .show_posi a{
     display:block;
+    line-height: 30px;
     margin:7px 0;
-    font-size:12px;
+    font-size:1.2rem;
+    letter-spacing: 0.15rem;
+    border-bottom: 1px solid #d00000;
+}
+.show_posi a:nth-child(1){
+      padding: 0.1rem 0;
+}
+.show_posi a:nth-child(2){
+      border-bottom: none;
 }
 
 /* 使用手册 */
@@ -489,8 +513,32 @@
 }
 .box-right  .box-con{
     text-align:right;
+   
 }
 
+.sure-alertLi{
+    width: 48%;
+    margin-right: 2%;
+    margin-left: 1%;
+    padding-top: .3rem;
+    padding-bottom: .3rem;
+}
+.sure_green{
+    background: green;
+}
+.sure_red{
+    background: #d00000;
+}
+.sure_alert{
+    color: #fff !important;
+    font-size: 1.2rem;
+    letter-spacing: 0.2rem;
+}
+.cancal_alert{
+     color: #fff !important;
+    font-size: 1.2rem;
+    letter-spacing: 0.2rem;
+}
 /* 待确认 */
 .daihuai{
 
@@ -531,7 +579,13 @@
     color:#d00000;
 }
 .confirm_item{
-    border-bottom:2px solid #ddd;
+    border:0.05rem solid #999;
+    border-top: none;
+    border-radius: 0.5rem;
+    position: relative;
+}
+.confirm_item:nth-child(1){
+    border-top: 0.05rem solid #999;
 }
 .cofirm_con{
     width:100%;
@@ -543,17 +597,23 @@
 }
 .cofirm_con li{
     text-align:center;
-    border-bottom:1px dashed #ddd;
-    padding:.8rem 0;
-    width:50%;
+    width:40.3%;
     float:left;
 }
-.cofirm_con li:first-child{
-    border-right:1px dashed #ddd;
-}
 .cofirm_con li p{
-    line-height:20px;
-    margin:5px 0;
+    line-height: 2rem;
+}
+/* .cofirm_con li:first-child{
+    border-right:1px dashed #ddd;
+} */
+/* .cofirm_con li p{
+    margin:5px 0;   
+} */
+.cofirm_con li img{
+    width: 2.8rem;
+    height: 2.8rem;
+    border-radius: 50%;
+    margin-top: 0.3rem;
 }
 .content_div{
     overflow-y:auto;
@@ -563,19 +623,26 @@
     font-size:15px;
     font-weight:600;
 }
+.cofirm_con li p span.big{
+     font-size:18px;
+    font-weight:600;
+}
 .confirm_list{
     background-color:#fff;
 }
-.confirm_item>p{
+/* .confirm_item>p{   
     width:100%;
     text-align:center;
-    padding:1rem 0;
     position:relative;
-}
+} */
+/* .confirm_item>p>a{
+    display: inline-block;
+    width: 40%;
+} */
 .icon-daihuai{
     position: absolute;
     right: 13px;
-    bottom: 34px;
+    bottom: 5px;
     background-position: -36px -174px;
     width: 50px;
     height: 50px;
@@ -676,11 +743,40 @@
 
 
 /* 补借条 */
+
+.box-right li:nth-child(2){
+    height: 40px;
+    line-height: 40px;
+}
+.box-img{
+    margin-top: 0.2rem;
+    text-align: center;
+    line-height: 44px;
+    height: 44px;
+    margin: 0 auto;
+}
+.box-conImg{
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+
+}
+.box-con .box-cona{
+    background: #d00000;
+    color: #fff;
+    font-size: 14px;
+    line-height: 30px;
+    padding: 0 .5rem;
+    position: absolute;
+    top:0.3rem;
+    right: 55%;
+}
 .box-right input{
     text-align:right;
 }
 .box-con-danwei{
     position:relative;
+  
 }
 .box-con-danwei input{
     width:-webkit-calc(100% - 25px);
@@ -701,53 +797,84 @@ input[type='hidden']{
     width:0;
 }
 
+
 /* 下拉固定内容 */
 .drop_down{
     position:fixed;
     bottom:0;
     width:100%;
+    height: 16rem;
     text-align:center;
+    -webkit-box-sizing: border-box;
+    -webkit-transform: translateY(100%);
+    display: -webkit-box;
+    box-sizing: border-box;
+	background: #fff;
+	-webkit-box-orient: vertical;
+	-webkit-box-align: stretch;
+	-webkit-box-pack: start;
+	-webkit-transition: all .2s ease-in;
+    transition: all .2s ease-in;
+    background: #d00000;				    		
 }
 .drop_down .drop_down_head{
     position:relative;
-    height:30px;
-    line-height:30px;
+    height:2rem;
+    list-style: 2rem;;
     background-color:#e5e5e5;
+}
+.drop_down_menu{
+    -webkit-box-flex: 1;
+	width: 100%;
+	height: 2rem;
+	line-height: 2rem;
+	text-align: center;
+	border-width: .01333rem 0;
+	border-color: #cdcdcd;
+	border-style: solid;
+	color: #ddd;
+	margin: 0;
 }
 .confirm-btn{
     position:absolute;
     right:29px;
+    line-height: 2rem;
 }
 .drop_down_list{
-    position:relative;
-    width:100%;
-    padding-top:30px;
+    /* position:relative;
+    width:100%; */
+    display: -webkit-box;
+	height: 14rem;
+	-webkit-box-align: center;
+	-webkit-box-pack: center;
+    overflow: hidden;
+    background-color:rgba(170,170,170,1); 
 }
 .drop_down ul{
-    max-height:100px;
+    /* max-height:240px;
     overflow-y:auto;
-    -webkit-overflow-scrolling:touch
-   
+    -webkit-overflow-scrolling:touch; */
+	margin: 0;
+	white-space: nowrap;
+	overflow: hidden;
+    text-overflow: ellipsis;  
+    transform: translate3d(0px, 0px, 0px);
+    -webkit-overflow-scrolling:touch;
 }
-.drop_down_list p.fixed_li{
-    position: absolute;
-    top: 0;
-    left: 0;
-    font-size: 15px;
-    border-top: 1px solid #fff;
-    border-bottom: 2px solid #fff;
-    background-color: rgba(170,170,170,.8);
-}
-.drop_down_list li,.drop_down_list p{
-    background-color:rgba(170,170,170,1);
-    
-    height:30px;
-    line-height:30px;
-    width:100%;
-    font-size:13px;
-}
+
 .drop_down_list li{
     color:#555;
+    height: 2rem;
+	margin: 0;
+	white-space: nowrap;
+	overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-overflow-scrolling:touch;
+}
+.drop_down_list li.on{
+    color: #000;
+    font-weight: 600;
+    font-size: 16px;
 }
 .checkbox-label{
     position:relative;
@@ -792,7 +919,12 @@ input[type='hidden']{
     height: 30px;
     line-height: 30px;
 }
-
+.padding-allLi{
+    border: 1px solid #ddd;
+    margin-bottom: 40px;
+    height: 40px;
+    line-height: 40px;
+}
 .second-li li{
     float:left;
     width:50%;
@@ -833,6 +965,7 @@ input[type='hidden']{
     display:table;
     width:100%;
 }
+
 .search_con_ul_div dl{
     display:table-row;
     width:100%;
@@ -841,44 +974,112 @@ search_con_ul_div dl{
     font-weight:bold;
 }
 .search_con_ul_div dd{
-    padding:.7rem 0;
-    border-top:1px solid #ddd;
-    border-bottom:1px solid #ddd;
     color:#333;
     font-size:14px;
     display:table-cell;
     text-align:center;
-    width:33.33%;
+}
+
+.search_con_ul_div dd:nth-child(1){
+    width: 25%;
+}
+.search_con_ul_div dd:nth-child(2){
+    width: 33%;
+}
+.search_con>.search_con_ul_div>dl>dd{
+    padding-bottom: 0.4rem;
+}
+.search_con_ul_div dd img{
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 50%;
+    vertical-align: middle;
+}
+.search_con_ul_div dd.paper_money{
+    font-size: 16px;
+    font-weight: 400;
+    color: #333;
 }
 .search_con_ul{
     overflow:auto;
-    -webkit-overflow-scrolling:touch
+    -webkit-overflow-scrolling:touch;
+}
+.search_con_ulLi{
+    border: 1px solid #999;
+    border-top: none;
+    border-radius: 0.8rem;
+    height: 54px;   
+    overflow: hidden;
+}
+.search_con_ulLi.on{
+    height: auto;
+}
+.search_con_ul>li:nth-child(1){
+    border-top: 1px solid #999;
 }
 .search_con_ul dd{
-    padding:.6rem 0;
+    line-height: 3.2rem;
     color:#999;
-    border-bottom:1px dashed #ddd;
     font-size:13px;
 }
+
 .search_con_ul .group-person-second a{
     color:#999;
     font-size:13px;
 }
-.search_con_ul li:not(:first-child) dl dd:not(:last-child){
-    border-right:1px dashed #ddd;
-    
-    
+.paper_money span{
+    display: inline-block;
+    width: 88%;
+    border: 0.05rem solid #E5E5E5;
+    line-height: 1.5rem;
+    border-radius: 0.5rem;
+}
+/* .search_con_ul li:not(:first-child) dl dd:not(:last-child){
+    border-right:1px dashed #ddd;     
+} */
+.box-searp{
+    text-align: center;
+    line-height: 2rem;
+    margin-bottom: 0.5rem;
+}
+.box-searp p{
+    color: #d00000;
+    font-size: 1.5rem;
+}
+.box-conabatn>.btn-small{
+    padding: 11px;
+}
+.box-pinfo{
+    color: #999;
+    font-size: 12px;
+    text-align: center;
 }
 /* 平分两部分 */
 .ul_2nd {
     width:100%;
+    display: block;
 }
 .ul_2nd li{
     text-align:center;
-    padding:.5rem 0;
+    line-height: 2.6rem;
+    display: inline-block;
+}
+.search_con_ulLi>.ul_2nd>li:nth-child(1){
+    width: 25%;
+}
+.ul_2nd li:nth-child(2){
+    width: 33%;
+}
+.ul_2nd li:nth-child(3){
+    width: 38%;
 }
 .ul_2nd li a{
     color:#999;
+    width: 88%;
+    display: inline-block;
+    border: 0.05rem solid #E5E5E5;
+    line-height: 1.5rem;
+    border-radius: 0.5rem;
 }
 /* 借出借条详情 */
 
@@ -944,11 +1145,17 @@ search_con_ul_div dl{
     height:200px;
 }
 
-
+@media screen and (max-width:350px) and (min-width:280px){
+    
+    .box-li-long>.box-con>input[name="name"]{
+        width: 150px;
+    }
+}
 @media screen and (max-width:375px) and (min-width:350px) {
     .loan_mess {
         padding: 3rem 1.2rem 1rem
     }
+
 }
 
 @media screen and (max-width:414px) and (min-width:376px) {
@@ -957,3 +1164,4 @@ search_con_ul_div dl{
     }
     .erweima p{font-size:16px;}
 }
+

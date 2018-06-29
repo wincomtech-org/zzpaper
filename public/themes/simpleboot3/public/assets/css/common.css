@@ -12,6 +12,7 @@ html,body{font-family:Microsoft YaHei,Segoe UI Light,Segoe UI,"微软雅黑",Tah
 
 textarea,input,button,select,img{border:none;outline:none;}
 input[type=button],input[type=submit],input[type=file],input[type=text],input[type=reset],button{cursor:pointer;-webkit-appearance:none;border-radius:0;-webkit-border-radius:0;-moz-border-radius:0;-ms-border-radius:0;}
+
 .rt{
     float:right;
 }
@@ -41,6 +42,7 @@ img{transform:scale(1) translateZ(0)}
 }
 .backg-white{
     background-color:#fff;
+    position: relative;
 }
 .red{
     color:#d00000 !important;
@@ -52,7 +54,6 @@ img{transform:scale(1) translateZ(0)}
     color:#999 !important;
 }
 .btn-small{
-    padding:6px;
     font-size:13px;
     line-height:1;
     padding:6px;
@@ -78,7 +79,7 @@ img{transform:scale(1) translateZ(0)}
     height:30px;
     line-height:30px;
     display:block;
-    margin:0 auto;
+    margin:2rem auto;
 }
 .main{
     padding:.5rem;
@@ -86,8 +87,13 @@ img{transform:scale(1) translateZ(0)}
 
 .padding-all{
     padding:0 .7rem;
+    
 }
-
+.box-right>.padding-all{
+    border: 1px solid #ddd;
+    border-radius: 0.5rem;
+    margin: 0.3rem 0;
+}
 /* flex布局 */
 .box-li,.person_head,.group-person-second,.nav-fixed,.pop_up_ul,.content_nav,.bottom-fixed,.ul_2nd,.promit-p{
     display: -webkit-box;   /* OLD - iOS 6-, Safari 3.1-6 */
@@ -138,4 +144,66 @@ img{transform:scale(1) translateZ(0)}
     -ms-border-radius:10px;
     -o-border-radius:10px;
     border-radius:10px;
+}
+/* 出借人代收页面的文字颜色设置 */
+/* 6已还，5逾期，4待还，3今日到期 */
+.paper_color6{
+    color:green !important;
+   
+}
+.paper_color6 span{
+    display: inline-block;
+    width: 88%;
+    line-height: 1.5rem;
+    border: 0.05rem solid green;
+    border-radius: 0.5rem;
+}
+.paper_color6 div{
+    border: 0.05rem solid green;
+    width: 88%;
+    line-height: 1.5rem;
+    color: green;
+    border-radius: 0.5rem;
+}
+.paper_color5{
+	color:red !important;
+}
+.paper_color5 span{
+    display: inline-block;
+    width: 88%;
+    line-height: 1.5rem;
+    border: 0.05rem solid red;
+    border-radius: 0.5rem;
+}
+.paper_color4{
+	color:gray !important;
+}
+.paper_color4 span{
+    display: inline-block;
+    width: 88%;
+    line-height: 1.5rem;
+    border: 0.05rem solid #ddd;
+    border-radius: 0.5rem;
+}
+.paper_color3{
+    color:#FFD700 !important; 
+    
+}
+
+.paper_color3 span{
+    border: 1px solid #FFD700;
+    display: inline-block;
+    width: 88%;
+    line-height: 1.5rem;
+    border-radius: 0.5rem;
+}
+
+
+/* 6已还，5逾期，4待还，3今日到期 */
+.bigColorback{
+    color: #00c4fd;
+}
+
+.bigColorsend{
+    color: #d00000;
 }
