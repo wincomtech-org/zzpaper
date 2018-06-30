@@ -768,8 +768,8 @@
     line-height: 30px;
     padding: 0 .5rem;
     position: absolute;
-    top:0.3rem;
-    right: 55%;
+    top:-2.4rem;
+    right: 4%;
 }
 .box-right input{
     text-align:right;
@@ -856,18 +856,18 @@ input[type='hidden']{
     -webkit-overflow-scrolling:touch; */
 	margin: 0;
 	white-space: nowrap;
-	overflow: hidden;
     text-overflow: ellipsis;  
     transform: translate3d(0px, 0px, 0px);
     -webkit-overflow-scrolling:touch;
+    overflow-y:auto;
 }
 
 .drop_down_list li{
     color:#555;
+    line-height: 2rem;
     height: 2rem;
 	margin: 0;
 	white-space: nowrap;
-	overflow: hidden;
     text-overflow: ellipsis;
     -webkit-overflow-scrolling:touch;
 }
