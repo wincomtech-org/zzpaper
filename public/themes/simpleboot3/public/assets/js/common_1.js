@@ -211,12 +211,12 @@ $(function(){
                 return false;
             }
         });
+        $(".search_con_ulLi").click(function () {
+            $(this).find(".ul_2nd").toggle();
+        })
 
-
-        $(".search_con_ulLi").on("click", function () {
-            $(this).toggleClass("on");
-        });
-})
+      
+});
 
 
 
